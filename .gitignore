@@ -1,0 +1,11 @@
+*.o
+*.so
+*.a
+.*
+*.raw
+*.jpg
+*.png
+*.zip
+*.orig
+tags
+*~
