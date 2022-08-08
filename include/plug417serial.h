@@ -5,7 +5,7 @@
 #define _PLUG417SERIAL_H_
 
 #ifdef __cplusplus
-extern "C" {
+//extern "C" {
 #endif
 
 #include <stdint.h>
@@ -21,6 +21,10 @@ extern "C" {
 #define PLUG417_APPLICATION_PAGE		3
 #define PLUG417_TEMPERATURE_MEASUREMENT_PAGE	4
 #define PLUG417_EXPERT_PAGE			5
+
+#define PLUG417_ANALOG_VIDEO_PAGE		0
+#define PLUG417_DIGITAL_VIDEO_PAGE		1
+#define PLUG417_ALGORITHM_SETTING_PAGE		2
 
 /*
  * Setup page
@@ -41,9 +45,17 @@ extern "C" {
 #define PLUG417_COMMAND_ROW_GRADIENTS_PATTERN		2
 #define PLUG417_COMMAND_LINE_GRADIENTS_PATTERN		3
 
+#define PLUG417_COMMAND_REAL_TIME_IMAGE			0
+#define PLUG417_COMMAND_CHECKER_BOARD_PATTERN		1
+#define PLUG417_COMMAND_ROW_GRADIENTS_PATTERN		2
+#define PLUG417_COMMAND_LINE_GRADIENTS_PATTERN		3
+#define PLUG417_COMMAND_TEST_SCREEN_MAX			PLUG417_COMMAND_LINE_GRADIENTS_PATTERN
+
 /*
  * Video page
  */
+
+/* Analog */
 #define PLUG417_OPTION_ANALOG_VIDEO_SWITCH		1
 #define PLUG417_OPTION_VIDEO_SYSTEM_SWITCHING		2
 #define PLUG417_OPTION_FRAME_RATE_SETTING		3
@@ -53,6 +65,54 @@ extern "C" {
 #define PLUG417_OPTION_COORDINATE_X_ZOOMED AREA		7
 #define PLUG417_OPTION_COORDINATE_Y_ZOOMED AREA		8
 #define PLUG417_OPTION_HOTSPOT_TRACK_SWITCH		9
+
+#define PLUG417_COMMAND_COLOR_WHITE_HOT			0
+#define PLUG417_COMMAND_COLOR_FULGURITE			1
+#define PLUG417_COMMAND_COLOR_IRON_RED			2
+#define PLUG417_COMMAND_COLOR_HOT_IRON			3
+#define PLUG417_COMMAND_COLOR_MEDICAL			4
+#define PLUG417_COMMAND_COLOR_ARCTIC			5
+#define PLUG417_COMMAND_COLOR_RAINBOW_1			6
+#define PLUG417_COMMAND_COLOR_RAINBOW_2			7
+#define PLUG417_COMMAND_COLOR_TINT			8
+#define PLUG417_COMMAND_COLOR_BLACK_HOT			9
+#define PLUG417_COMMAND_COLOR_MAX			PLUG417_COMMAND_COLOR_BLACK_HOT
+
+#define PLUG417_COMMAND_MIRROR_NA			0
+#define PLUG417_COMMAND_MIRROR_X			1
+#define PLUG417_COMMAND_MIRROR_Y			2
+#define PLUG417_COMMAND_MIRROR_XY			3
+#define PLUG417_COMMAND_MIRROR_MAX			PLUG417_COMMAND_MIRROR_XY
+
+/* Digital */
+#define PLUG417_OPTION_EXTERNAL_SYNCHRONIZATION_SWITCH	1
+#define PLUG417_OPTION_DIGITAL_PORT_PARALLEL_TYPE	2
+#define PLUG417_OPTION_CMOS_CONTENT_SELECTION		3
+#define PLUG417_OPTION_CMOS_INTERFACE_TYPE		4
+#define PLUG417_OPTION_DIGITAL_FRAME_RATE_SETTING	5
+#define PLUG417_OPTION_MIPI_SWITCH			6
+#define PLUG417_OPTION_SCENE_COMPENSATION		7
+#define PLUG417_OPTION_SHUTTER_COMPENSATION		8
+
+#define PLUG417_COMMAND_CMOS_CONTENT_YUV422			0
+#define PLUG417_COMMAND_CMOS_CONTENT_YUV422_PARM_LINE		1
+#define PLUG417_COMMAND_CMOS_CONTENT_YUV16			2
+#define PLUG417_COMMAND_CMOS_CONTENT_YUV16_PARM_LINE		3
+#define PLUG417_COMMAND_CMOS_CONTENT_Y16_YUV422			4
+#define PLUG417_COMMAND_CMOS_CONTENT_YUV16_PARM_LINE_YUV422	5
+#define PLUG417_COMMAND_CMOS_CONTENT_MAX			PLUG417_COMMAND_CMOS_CONTENT_YUV16_PARM_LINE_YUV422
+
+#define PLUG417_COMMAND_CMOS_INTERFACE_CMOS16			0
+#define PLUG417_COMMAND_CMOS_INTERFACE_CMOS8_MSB		1
+#define PLUG417_COMMAND_CMOS_INTERFACE_CMOS8_LSB		2
+#define PLUG417_COMMAND_CMOS_INTERFACE_MAX			PLUG417_COMMAND_CMOS_INTERFACE_CMOS8_LSB
+
+/* Algorithm */
+#define PLUG417_OPTION_BRIGHTNESS			0x0a
+#define PLUG417_OPTION_CONTRAST				0x0b
+
+#define PLUG417_COMMAND_BRIGHTNESS_MAX			100
+#define PLUG417_COMMAND_CONTRAST_MAX			100
 
 struct plug417_command {
 	uint8_t functional;
@@ -104,7 +164,7 @@ struct plug417_frame {
 		struct plug417_handshake handshake;
 		struct plug417_query query;
 		struct plug417_status status;
-		uint8_t raw[256];
+		uint8_t raw[258];
 	} __attribute__((packed));
 	uint8_t cs;
 	uint8_t end;
@@ -127,12 +187,28 @@ struct plug417_serial *plug417_open(const char *serial);
 
 void plug417_close(struct plug417_serial *s);
 
-int plug417_get_status(struct plug417_serial *s, struct plug417_status *st);
+int plug417_query_status(struct plug417_serial *s, struct plug417_status *st);
+
+int plug417_query(struct plug417_serial *s, unsigned int func, unsigned int page);
 
 void plug417_print_status(struct plug417_serial *s, struct plug417_status *st);
 
+int plug417_set_pseaudo_color(struct plug417_serial *s, unsigned int color);
+
+int plug417_set_mirror_image(struct plug417_serial *s, unsigned int mirror);
+
+int plug417_set_test_screen(struct plug417_serial *s, unsigned int test);
+
+int plug417_set_cmos_content(struct plug417_serial *s, unsigned int cmos);
+
+int plug417_set_cmos_interface(struct plug417_serial *s, unsigned int cmos);
+
+int plug417_set_brightness(struct plug417_serial *s, unsigned int brightness);
+
+int plug417_set_contrast(struct plug417_serial *s, unsigned int contrast);
+
 #ifdef __cplusplus
-}
+//}
 #endif
 
 #endif

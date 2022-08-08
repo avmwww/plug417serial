@@ -113,6 +113,7 @@ static int plug417_put_byte(struct plug417_serial *s, uint8_t b)
 	if (s->size == (s->frame.length + 3)) {
 		/* XOR checkout */
 		s->frame.cs = b;
+		s->frame.raw[s->size - 3] = b;
 		return 0;
 	}
 
@@ -121,6 +122,7 @@ static int plug417_put_byte(struct plug417_serial *s, uint8_t b)
 		return -1;
 
 	s->frame.end = b;
+	s->frame.raw[s->size - 3] = b;
 
 	if (s->frame.cs != xor_checkout(&s->frame.length, s->frame.length + 1))
 		return -1;
@@ -144,9 +146,8 @@ int plug417_recv(struct plug417_serial *s, const void *buf, unsigned int len)
 
 		if (err > 0) {
 			/* Frame complete */
-			debug(0, "Received buffer %d bytes\n", s->size);
-			dump_buf(&s->frame, s->size - 4);
-			dump_buf(&s->frame.cs, 2);
+			debug(0, "Received buffer %d bytes\n", s->size + 1);
+			dump_buf(&s->frame, s->size + 1);
 			s->size = 0;
 			return 1;
 		} else {
@@ -185,6 +186,24 @@ int plug417_send(struct plug417_serial *s,
 /*
  *
  */
+static int plug417_handshake_decode(struct plug417_serial *s)
+{
+	if (s->frame.length != 1)
+		return 0;
+
+	/* Decode handshake */
+	if (s->frame.handshake.option != 0) {
+		debug(10, "Handshake ERROR\n");
+		return -1;
+	}
+	debug(10, "Handshake OK\n");
+
+	return 0;
+}
+
+/*
+ *
+ */
 int plug417_receive(struct plug417_serial *s)
 {
 	int n;
@@ -211,16 +230,16 @@ int plug417_receive(struct plug417_serial *s)
 /*
  *
  */
-int plug417_get_status(struct plug417_serial *s, struct plug417_status *st)
+static int plug417_request(struct plug417_serial *s, uint8_t functional,
+		uint8_t page, uint8_t option, uint32_t command)
 {
-	if (plug417_send(s, 0, PLUG417_STATUS_PAGE, 0x80, 0) < 0)
+	if (plug417_send(s, functional, page, option, command) < 0)
 		return -1;
 
 	if (plug417_receive(s) < 0)
 		return -1;
 
-	memcpy(st, &s->frame.status, sizeof(struct plug417_status));
-	return 0;
+	return plug417_handshake_decode(s);
 
 }
 
@@ -273,6 +292,115 @@ void plug417_print_status(struct plug417_serial *s, struct plug417_status *st)
 	}
 
 	printf("Machine identification code %08x\n", be32toh(st->machine_id));
+}
+
+/*
+ *
+ */
+int plug417_query(struct plug417_serial *s, unsigned int func, unsigned int page)
+{
+	if (func > 4 || page > 2)
+		return -1;
+
+	return plug417_request(s, func, page, 0x80, 0);
+}
+
+/*
+ *
+ */
+int plug417_query_status(struct plug417_serial *s, struct plug417_status *st)
+{
+
+	if (plug417_request(s, PLUG417_STATUS_PAGE, 0, 0x80, 0) < 0)
+		return -1;
+
+	memcpy(st, &s->frame.status, sizeof(struct plug417_status));
+	return 0;
+
+}
+
+/*
+ *
+ */
+int plug417_set_pseaudo_color(struct plug417_serial *s, unsigned int color)
+{
+	if (color > PLUG417_COMMAND_COLOR_MAX)
+		return -1;
+
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_ANALOG_VIDEO_PAGE,
+				PLUG417_OPTION_PSEUDO_COLOR, color);
+}
+
+/*
+ *
+ */
+int plug417_set_mirror_image(struct plug417_serial *s, unsigned int mirror)
+{
+	if (mirror > PLUG417_COMMAND_MIRROR_MAX)
+		return -1;
+
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_ANALOG_VIDEO_PAGE,
+				PLUG417_OPTION_MIRROR_IMAGE, mirror);
+}
+
+/*
+ *
+ */
+int plug417_set_test_screen(struct plug417_serial *s, unsigned int test)
+{
+	if (test > PLUG417_COMMAND_TEST_SCREEN_MAX)
+		return -1;
+
+	return plug417_request(s, PLUG417_SETUP_PAGE, PLUG417_ANALOG_VIDEO_PAGE,
+				PLUG417_OPTION_TEST_SCREEN_SWITCHING, test);
+}
+
+/*
+ *
+ */
+int plug417_set_cmos_content(struct plug417_serial *s, unsigned int cmos)
+{
+	if (cmos > PLUG417_COMMAND_CMOS_CONTENT_MAX)
+		return -1;
+
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_DIGITAL_VIDEO_PAGE,
+				PLUG417_OPTION_CMOS_CONTENT_SELECTION, cmos);
+}
+
+/*
+ *
+ */
+int plug417_set_cmos_interface(struct plug417_serial *s, unsigned int cmos)
+{
+	if (cmos > PLUG417_COMMAND_CMOS_INTERFACE_MAX)
+		return -1;
+
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_DIGITAL_VIDEO_PAGE,
+				PLUG417_OPTION_CMOS_INTERFACE_TYPE, cmos);
+}
+
+/*
+ *
+ */
+int plug417_set_brightness(struct plug417_serial *s, unsigned int brightness)
+{
+	if (brightness > PLUG417_COMMAND_BRIGHTNESS_MAX)
+		return -1;
+
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_ALGORITHM_SETTING_PAGE,
+				PLUG417_OPTION_BRIGHTNESS, brightness);
+}
+
+/*
+ *
+ */
+int plug417_set_contrast(struct plug417_serial *s, unsigned int contrast)
+{
+	if (contrast > PLUG417_COMMAND_CONTRAST_MAX)
+		return -1;
+
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_ALGORITHM_SETTING_PAGE,
+				PLUG417_OPTION_CONTRAST, contrast);
 }
 
 /*
