@@ -311,7 +311,7 @@ int plug417_query(struct plug417_serial *s, unsigned int func, unsigned int page
 int plug417_query_status(struct plug417_serial *s, struct plug417_status *st)
 {
 
-	if (plug417_request(s, PLUG417_STATUS_PAGE, 0, 0x80, 0) < 0)
+	if (plug417_query(s, PLUG417_STATUS_PAGE, 0) < 0)
 		return -1;
 
 	memcpy(st, &s->frame.status, sizeof(struct plug417_status));
