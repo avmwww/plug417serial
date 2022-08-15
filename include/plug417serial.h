@@ -5,7 +5,7 @@
 #define _PLUG417SERIAL_H_
 
 #ifdef __cplusplus
-//extern "C" {
+extern "C" {
 #endif
 
 #include <stdint.h>
@@ -208,7 +208,7 @@ int plug417_set_brightness(struct plug417_serial *s, unsigned int brightness);
 int plug417_set_contrast(struct plug417_serial *s, unsigned int contrast);
 
 #ifdef __cplusplus
-//}
+}
 #endif
 
 #endif
