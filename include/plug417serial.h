@@ -114,6 +114,57 @@ extern "C" {
 #define PLUG417_COMMAND_BRIGHTNESS_MAX			100
 #define PLUG417_COMMAND_CONTRAST_MAX			100
 
+struct plug417_analog_video_page {
+	uint8_t on;
+	uint8_t video_system;
+	uint8_t frame_rate;
+	uint8_t pseudo_color;
+	uint8_t mirror;
+	uint16_t zoom_x;
+	uint16_t zoom_y;
+	uint16_t hotspot_track;
+	uint8_t reserved[6];
+} __attribute__((packed));
+
+#define PLUG417_ANALOG_P_SYSTEM_384_288			0
+#define PLUG417_ANALOG_N_SYSTEM_320_240			1
+#define PLUG417_ANALOG_P_SYSTEM_360_288			2
+#define PLUG417_ANALOG_N_SYSTEM_360_240			3
+
+#define PLUG417_ANALOG_FRAME_RATE_50_60_HZ		0
+#define PLUG417_ANALOG_FRAME_RATE_25_30_HZ		1
+#define PLUG417_ANALOG_FRAME_RATE_9_HZ			2
+
+struct plug417_digital_video_page {
+	uint8_t external_sync;
+	uint8_t port;
+	uint8_t format;
+	uint8_t interface;
+	uint8_t frame_rate;
+	uint8_t mipi;
+	uint8_t reserved[11];
+} __attribute__((packed));
+
+#define PLUG417_DIGITAL_PORT_OFF			0
+#define PLUG417_DIGITAL_PORT_BT_656			1
+#define PLUG417_DIGITAL_PORT_CMOS			2
+
+#define PLUG417_DIGITAL_FORMAT_YUV422			0
+#define PLUG417_DIGITAL_FORMAT_YUV422_PARAM_LINE	1
+#define PLUG417_DIGITAL_FORMAT_YUV16			2
+#define PLUG417_DIGITAL_FORMAT_YUV16_PARAM_LINE		3
+#define PLUG417_DIGITAL_FORMAT_Y16_YUV422		4
+#define PLUG417_DIGITAL_FORMAT_Y16_PARAM_LINE_YUV422	5
+
+#define PLUG417_DIGITAL_INTERFACE_CMOS16		0
+#define PLUG417_DIGITAL_INTERFACE_CMOS8_MSB		1
+#define PLUG417_DIGITAL_INTERFACE_CMOS8_LSB		2
+
+#define PLUG417_DIGITAL_FRAME_RATE_50_60_HZ		0
+#define PLUG417_DIGITAL_FRAME_RATE_25_30_HZ		1
+#define PLUG417_DIGITAL_FRAME_RATE_9_HZ			2
+
+
 struct plug417_command {
 	uint8_t functional;
 	uint8_t page;
@@ -176,6 +227,7 @@ struct plug417_serial {
 	long timeout;
 	struct termios termios;
 	struct plug417_frame frame;
+	int frame_size;
 };
 
 int plug417_recv(struct plug417_serial *s, const void *buf, unsigned int len);
@@ -190,6 +242,8 @@ void plug417_close(struct plug417_serial *s);
 int plug417_query_status(struct plug417_serial *s, struct plug417_status *st);
 
 int plug417_query(struct plug417_serial *s, unsigned int func, unsigned int page);
+
+int plug417_query_reply_print(struct plug417_serial *s);
 
 void plug417_print_status(struct plug417_serial *s, struct plug417_status *st);
 

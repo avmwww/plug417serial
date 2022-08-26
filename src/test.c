@@ -67,6 +67,7 @@ static struct option plug417_options[] = {
 	{"mirror",     required_argument, 0,  'm' },
 	{"page",       required_argument, 0,  'p' },
 	{"test",       required_argument, 0,  't' },
+	{"help",       no_argument,       0,  'h' },
 	{0,            0,                 0,   0  }
 };
 
@@ -78,7 +79,7 @@ static int parse_opt(int argc, char **argv, struct plug417 *plug)
 	int c;
 	int optindex = 0;
 
-	while ((c = getopt_long(argc, argv, "b:c:d:e:f:g:m:p:t:", plug417_options, &optindex)) != -1) {
+	while ((c = getopt_long(argc, argv, "b:c:d:e:f:g:m:p:t:h", plug417_options, &optindex)) != -1) {
 		switch (c) {
 			case 'b':
 				plug->brightness = strtol(optarg, NULL, 0);
@@ -175,6 +176,7 @@ int main(int argc, char **argv)
 				plug417_print_status(ps, &st);
 		} else {
 			plug417_query(ps, plug->query, plug->page);
+			plug417_query_reply_print(ps);
 		}
 	}
 

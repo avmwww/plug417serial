@@ -148,6 +148,7 @@ int plug417_recv(struct plug417_serial *s, const void *buf, unsigned int len)
 			/* Frame complete */
 			debug(0, "Received buffer %d bytes\n", s->size + 1);
 			dump_buf(&s->frame, s->size + 1);
+			s->frame_size = s->size + 1;
 			s->size = 0;
 			return 1;
 		} else {
@@ -211,6 +212,7 @@ int plug417_receive(struct plug417_serial *s)
 	struct timeval tv;
 	uint64_t start, cur;
 
+	s->frame_size = 0;
 	do {
 		gettimeofday(&tv, NULL);
 		start = tv.tv_sec * 1000000UL + tv.tv_usec;
@@ -292,6 +294,178 @@ void plug417_print_status(struct plug417_serial *s, struct plug417_status *st)
 	}
 
 	printf("Machine identification code %08x\n", be32toh(st->machine_id));
+}
+
+/*
+ *
+ */
+static void plug417_print_analog_video_page(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+	struct plug417_analog_video_page *a;
+	a = (struct plug417_analog_video_page *)f->query.option;
+
+	printf("Analog video page\n");
+	printf("Analog video: %s\n", a->on ? "ON" : "OFF");
+	printf("Video system: ");
+	switch (a->video_system) {
+		case PLUG417_ANALOG_P_SYSTEM_384_288:
+			printf("384x288\n");
+			break;
+		case PLUG417_ANALOG_N_SYSTEM_320_240:
+			printf("320x240\n");
+			break;
+		case PLUG417_ANALOG_P_SYSTEM_360_288:
+			printf("360x288\n");
+			break;
+		case PLUG417_ANALOG_N_SYSTEM_360_240:
+			printf("360x240\n");
+			break;
+		default:
+			printf("UNKNOWN\n");
+			break;
+	}
+	printf("Frame rate: ");
+	switch (a->frame_rate) {
+		case PLUG417_ANALOG_FRAME_RATE_50_60_HZ:
+			printf("50/60 HZ\n");
+			break;
+		case PLUG417_ANALOG_FRAME_RATE_25_30_HZ:
+			printf("25/30 HZ\n");
+			break;
+		case PLUG417_ANALOG_FRAME_RATE_9_HZ:
+			printf("9 HZ\n");
+			break;
+		default:
+			printf("UNKNOWN\n");
+			break;
+	}
+}
+
+/*
+ *
+ */
+static void plug417_print_digital_video_page(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+	struct plug417_digital_video_page *d;
+
+	d = (struct plug417_digital_video_page *)f->query.option;
+
+	printf("Digital video page\n");
+
+	printf("External synchronization: %s\n", d->external_sync ? "ON" : "OFF");
+	printf("Digital port: ");
+	switch (d->port) {
+		case PLUG417_DIGITAL_PORT_OFF:
+			printf("OFF\n");
+			break;
+		case PLUG417_DIGITAL_PORT_BT_656:
+			printf("BT.656\n");
+			break;
+		case PLUG417_DIGITAL_PORT_CMOS:
+			printf("CMOS\n");
+			break;
+		default:
+			printf("UNKNOWN\n");
+			break;
+	}
+	printf("Output contents: ");
+	switch (d->format) {
+		case PLUG417_DIGITAL_FORMAT_YUV422:
+			printf("YUV422\n");
+			break;
+		case PLUG417_DIGITAL_FORMAT_YUV422_PARAM_LINE:
+			printf("YUV422 parameter line\n");
+			break;
+		case PLUG417_DIGITAL_FORMAT_YUV16:
+			printf("YUV16\n");
+			break;
+		case PLUG417_DIGITAL_FORMAT_YUV16_PARAM_LINE:
+			printf("YUV16 parameter line\n");
+			break;
+		case PLUG417_DIGITAL_FORMAT_Y16_YUV422:
+			printf("Y16 YUV422\n");
+			break;
+		case PLUG417_DIGITAL_FORMAT_Y16_PARAM_LINE_YUV422:
+			printf("Y16 parameter line YUV422\n");
+			break;
+		default:
+			printf("UNKNOWN\n");
+			break;
+	}
+	printf("Interface type: ");
+	switch (d->interface) {
+		case PLUG417_DIGITAL_INTERFACE_CMOS16:
+			printf("CMOS16\n");
+			break;
+		case PLUG417_DIGITAL_INTERFACE_CMOS8_MSB:
+			printf("CMOS8 MSB\n");
+			break;
+		case PLUG417_DIGITAL_INTERFACE_CMOS8_LSB:
+			printf("CMOS8 LSB\n");
+			break;
+		default:
+			printf("UNKNOWN\n");
+			break;
+	}
+	printf("Frame rate: ");
+	switch (d->frame_rate) {
+		case PLUG417_DIGITAL_FRAME_RATE_50_60_HZ:
+			printf("50/60 Hz\n");
+			break;
+		case PLUG417_DIGITAL_FRAME_RATE_25_30_HZ:
+			printf("25/30 Hz\n");
+			break;
+		case PLUG417_DIGITAL_FRAME_RATE_9_HZ:
+			printf("9 Hz\n");
+			break;
+		default:
+			printf("UNKNOWN\n");
+			break;
+	}
+	printf("MIPI: %s\n", d->mipi ? "ON" : "OFF");
+}
+
+/*
+ *
+ */
+static void plug417_print_video_page(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+
+	switch (f->query.page) {
+		case PLUG417_ANALOG_VIDEO_PAGE:
+			plug417_print_analog_video_page(s);
+			break;
+		case PLUG417_DIGITAL_VIDEO_PAGE:
+			plug417_print_digital_video_page(s);
+			break;
+		default:
+			break;
+	}
+}
+
+/*
+ *
+ */
+int plug417_query_reply_print(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+
+	if (s->frame_size == 0)
+		return -1;
+
+	switch (f->query.functional) {
+		case PLUG417_VIDEO_PAGE:
+			plug417_print_video_page(s);
+			break;
+		default:
+			printf("Unknown query page returned %d\n", f->query.functional);
+			return -1;
+	}
+
+	return 0;
 }
 
 /*
