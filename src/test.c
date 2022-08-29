@@ -13,7 +13,7 @@
 
 #include "plug417serial.h"
 
-#define DEFAULT_DEVICE_NAME		"/dev/ttyUSB0"
+#define DEFAULT_DEVICE_NAME		"/dev/ttyACM0"
 
 struct plug417 {
 	int color;
@@ -49,6 +49,7 @@ static void usage(char **argv)
 	printf("\t-c --color <0..%d>\tSet pseudo color\n", PLUG417_COMMAND_COLOR_MAX);
 	printf("\t-m --mirror <0..%d>\tSet/Reset image mirroring\n", PLUG417_COMMAND_MIRROR_MAX);
 	printf("\t-t --test <0..%d>\tSet test screen\n", PLUG417_COMMAND_TEST_SCREEN_MAX);
+	printf("\t-v --verbose <0..99>\tPrint verbose debug information\n");
 	printf("\t-h --help\tUsage help\n");
 	exit(EXIT_SUCCESS);
 }
@@ -67,6 +68,7 @@ static struct option plug417_options[] = {
 	{"mirror",     required_argument, 0,  'm' },
 	{"page",       required_argument, 0,  'p' },
 	{"test",       required_argument, 0,  't' },
+	{"verbose",    required_argument, 0,  'v' },
 	{"help",       no_argument,       0,  'h' },
 	{0,            0,                 0,   0  }
 };
@@ -79,8 +81,11 @@ static int parse_opt(int argc, char **argv, struct plug417 *plug)
 	int c;
 	int optindex = 0;
 
-	while ((c = getopt_long(argc, argv, "b:c:d:e:f:g:m:p:t:h", plug417_options, &optindex)) != -1) {
+	while ((c = getopt_long(argc, argv, "b:c:d:e:f:g:m:p:t:v:h", plug417_options, &optindex)) != -1) {
 		switch (c) {
+			case 'v':
+				plug417serial_debug_level_set(strtol(optarg, NULL, 0));
+				break;
 			case 'b':
 				plug->brightness = strtol(optarg, NULL, 0);
 				break;

@@ -230,6 +230,8 @@ struct plug417_serial {
 	int frame_size;
 };
 
+int plug417serial_debug_level_set(int level);
+
 int plug417_recv(struct plug417_serial *s, const void *buf, unsigned int len);
 
 int plug417_send(struct plug417_serial *s,

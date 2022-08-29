@@ -17,8 +17,22 @@
 
 #include "plug417serial.h"
 
+#define PLUG417_SERIAL_DEBUG			10
+#define PLUG417_HANDSHAKE_DEBUG			9
+
 #ifdef DEBUG
-static int debug_level = 99;
+static int debug_level = 0;
+
+int plug417serial_debug_level_set(int level)
+{
+	debug_level = level;
+	if (level < 0)
+		level = 0;
+	else if (level > 99)
+		level = 99;
+	return debug_level;
+}
+
 void debug(int level, const char *fmt, ...)
 {
 	va_list ap;
@@ -40,11 +54,14 @@ void debug(int level, const char *fmt, ...)
 	va_end(ap);
 }
 
-void dump_buf(const void *buf, int size)
+void dump_buf(int level, const void *buf, int size)
 {
 	int i = 0;
 	unsigned int addr = 0;
 	const uint8_t *p = (const uint8_t *)buf;
+
+	if (level > debug_level)
+		return;
 
 	printf("Buffer:\n%04x: ", addr);
 
@@ -61,7 +78,8 @@ void dump_buf(const void *buf, int size)
 
 #else
 static inline void debug(int level, const char *fmt, ...) {}
-static inline void dump_buf(const void *buf, int size) {}
+static inline void dump_buf(int level, const void *buf, int size) {}
+int plug417serial_debug_level_set(int level) { return 0; }
 #endif
 
 /*
@@ -146,8 +164,8 @@ int plug417_recv(struct plug417_serial *s, const void *buf, unsigned int len)
 
 		if (err > 0) {
 			/* Frame complete */
-			debug(0, "Received buffer %d bytes\n", s->size + 1);
-			dump_buf(&s->frame, s->size + 1);
+			debug(PLUG417_SERIAL_DEBUG, "Received buffer %d bytes\n", s->size + 1);
+			dump_buf(PLUG417_SERIAL_DEBUG, &s->frame, s->size + 1);
 			s->frame_size = s->size + 1;
 			s->size = 0;
 			return 1;
@@ -179,8 +197,8 @@ int plug417_send(struct plug417_serial *s,
 	buf[f->length + 3] = xor_checkout(&buf[2], f->length + 1);
 	buf[f->length + 4] = PLUG417_FRAME_END;
 
-	debug(0, "Send buffer %d bytes\n", f->length + 5);
-	dump_buf(buf, f->length + 5);
+	debug(PLUG417_SERIAL_DEBUG, "Send buffer %d bytes\n", f->length + 5);
+	dump_buf(PLUG417_SERIAL_DEBUG, buf, f->length + 5);
 	return write(s->fd, buf, f->length + 5);
 }
 
@@ -194,10 +212,10 @@ static int plug417_handshake_decode(struct plug417_serial *s)
 
 	/* Decode handshake */
 	if (s->frame.handshake.option != 0) {
-		debug(10, "Handshake ERROR\n");
+		debug(PLUG417_HANDSHAKE_DEBUG, "Handshake ERROR\n");
 		return -1;
 	}
-	debug(10, "Handshake OK\n");
+	debug(PLUG417_HANDSHAKE_DEBUG, "Handshake OK\n");
 
 	return 0;
 }
