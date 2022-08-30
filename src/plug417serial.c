@@ -3,12 +3,9 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
-#include <endian.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -203,7 +200,7 @@ static int plug417_request(struct plug417_serial *s, uint8_t functional,
  */
 int plug417_query(struct plug417_serial *s, unsigned int func, unsigned int page)
 {
-	if (func > 4 || page > 2)
+	if (func > PLUG417_PAGE_MAX || page > PLUG417_VIDEO_PAGE_MAX)
 		return -1;
 
 	return plug417_request(s, func, page, 0x80, 0);

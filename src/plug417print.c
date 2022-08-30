@@ -125,6 +125,118 @@ void plug417_print_status(struct plug417_serial *s, struct plug417_status *st)
 	printf("Machine identification code %08x\n", be32toh(st->machine_id));
 }
 
+static const char *plug417_pseudo_color[] = {
+	"White hot",
+	"Fulgurite",
+	"Iron Red",
+	"Hot Iron",
+	"Medical",
+	"Arctic",
+	"Rainbow 1",
+	"Rainbow 2",
+	"Tint",
+	"Black hot",
+};
+
+static const char *plug417_frame_rate[] = {
+	"50/60 Hz",
+	"25/30 Hz",
+	"9 Hz",
+};
+
+static const char *plug417_video_system[] = {
+	"384x288",
+	"320x240",
+	"360x288",
+	"360x240",
+};
+
+static const char *plug417_mirror[] = {
+	"No",
+	"in X direction",
+	"in Y direction",
+	"in X and Y direction",
+};
+
+static const char *plug417_digital_port[] ={
+	"OFF",
+	"BT.656",
+	"CMOS",
+};
+
+static const char *plug417_digital_format[] ={
+	"YUV422",
+	"YUV422 parameter line",
+	"YUV16",
+	"YUV16 parameter line",
+	"Y16 YUV422",
+	"Y16 parameter line YUV422",
+};
+
+static const char *plug417_digital_interface[] = {
+	"CMOS16",
+	"CMOS8 MSB",
+	"CMOS8 LSB",
+};
+
+static const char *plug417_alorithm_dimming_mode[] ={
+	"Linear",
+	"Platform",
+	"Hybrid",
+};
+
+static const char *plug417_alorithm_ide_log[] = {
+	"IDE",
+	"LOG"
+};
+
+static const char *plug417_temperature_mode[] = {
+	"Minimum + maximum temperature of current analysis object",
+	"Cross cursor spot+ maximum temperature",
+	"minimum + Cross cursor spot temperature",
+};
+
+static const char *plug417_temperature_unit[] = {
+	"°C",
+	"°F",
+	"°K",
+};
+
+/*
+ *
+ */
+static void plug417_print_member(const char *fmt, unsigned int member,
+		unsigned int max, const char **tab)
+{
+	printf("%s: %s\n", fmt, member > max ?
+			"UNKNOWN" : tab[member]);
+}
+
+/*
+ *
+ */
+static void plug417_print_member_on_off(const char *fmt, unsigned int member)
+{
+	printf("%s: %s\n", fmt, member ? "ON" : "OFF");
+}
+
+/*
+ *
+ */
+static void plug417_print_digit(const char *fmt, unsigned int member)
+{
+	printf("%s: %d\n", fmt, member);
+}
+
+/*
+ *
+ */
+static void plug417_print_digit16(const char *fmt, unsigned int member)
+{
+	printf("%s: %d\n", fmt, be16toh(member));
+}
+
+
 /*
  *
  */
@@ -135,40 +247,30 @@ static void plug417_print_analog_video_page(struct plug417_serial *s)
 	a = (struct plug417_analog_video_page *)f->query.option;
 
 	printf("Analog video page\n");
-	printf("Analog video: %s\n", a->on ? "ON" : "OFF");
-	printf("Video system: ");
-	switch (a->video_system) {
-		case PLUG417_ANALOG_P_SYSTEM_384_288:
-			printf("384x288\n");
-			break;
-		case PLUG417_ANALOG_N_SYSTEM_320_240:
-			printf("320x240\n");
-			break;
-		case PLUG417_ANALOG_P_SYSTEM_360_288:
-			printf("360x288\n");
-			break;
-		case PLUG417_ANALOG_N_SYSTEM_360_240:
-			printf("360x240\n");
-			break;
-		default:
-			printf("UNKNOWN\n");
-			break;
-	}
-	printf("Frame rate: ");
-	switch (a->frame_rate) {
-		case PLUG417_ANALOG_FRAME_RATE_50_60_HZ:
-			printf("50/60 HZ\n");
-			break;
-		case PLUG417_ANALOG_FRAME_RATE_25_30_HZ:
-			printf("25/30 HZ\n");
-			break;
-		case PLUG417_ANALOG_FRAME_RATE_9_HZ:
-			printf("9 HZ\n");
-			break;
-		default:
-			printf("UNKNOWN\n");
-			break;
-	}
+
+	plug417_print_member_on_off("Analog video", a->on);
+
+	plug417_print_member("Video system",
+			a->video_system, PLUG417_ANALOG_VIDEO_SYSTEM_MAX,
+			plug417_video_system);
+
+	plug417_print_member("Frame rate",
+			a->frame_rate, PLUG417_ANALOG_FRAME_RATE_MAX,
+			plug417_frame_rate);
+
+	plug417_print_member("Pseudo collor",
+			a->pseudo_color, PLUG417_COMMAND_COLOR_MAX,
+			plug417_pseudo_color);
+
+	plug417_print_member("Mirror image",
+			a->mirror, PLUG417_ANALOG_MIRROR_MAX,
+			plug417_mirror);
+
+	plug417_print_digit("EZOOM zoom factor", a->ezoom);
+
+	plug417_print_digit("Coordinate X the center of zoomed area", be16toh(a->zoom_x));
+	plug417_print_digit("Coordinate Y the center of zoomed area", be16toh(a->zoom_y));
+	plug417_print_member_on_off("Hotspot track", a->hotspot_track);
 }
 
 /*
@@ -183,77 +285,68 @@ static void plug417_print_digital_video_page(struct plug417_serial *s)
 
 	printf("Digital video page\n");
 
-	printf("External synchronization: %s\n", d->external_sync ? "ON" : "OFF");
-	printf("Digital port: ");
-	switch (d->port) {
-		case PLUG417_DIGITAL_PORT_OFF:
-			printf("OFF\n");
-			break;
-		case PLUG417_DIGITAL_PORT_BT_656:
-			printf("BT.656\n");
-			break;
-		case PLUG417_DIGITAL_PORT_CMOS:
-			printf("CMOS\n");
-			break;
-		default:
-			printf("UNKNOWN\n");
-			break;
-	}
-	printf("Output contents: ");
-	switch (d->format) {
-		case PLUG417_DIGITAL_FORMAT_YUV422:
-			printf("YUV422\n");
-			break;
-		case PLUG417_DIGITAL_FORMAT_YUV422_PARAM_LINE:
-			printf("YUV422 parameter line\n");
-			break;
-		case PLUG417_DIGITAL_FORMAT_YUV16:
-			printf("YUV16\n");
-			break;
-		case PLUG417_DIGITAL_FORMAT_YUV16_PARAM_LINE:
-			printf("YUV16 parameter line\n");
-			break;
-		case PLUG417_DIGITAL_FORMAT_Y16_YUV422:
-			printf("Y16 YUV422\n");
-			break;
-		case PLUG417_DIGITAL_FORMAT_Y16_PARAM_LINE_YUV422:
-			printf("Y16 parameter line YUV422\n");
-			break;
-		default:
-			printf("UNKNOWN\n");
-			break;
-	}
-	printf("Interface type: ");
-	switch (d->interface) {
-		case PLUG417_DIGITAL_INTERFACE_CMOS16:
-			printf("CMOS16\n");
-			break;
-		case PLUG417_DIGITAL_INTERFACE_CMOS8_MSB:
-			printf("CMOS8 MSB\n");
-			break;
-		case PLUG417_DIGITAL_INTERFACE_CMOS8_LSB:
-			printf("CMOS8 LSB\n");
-			break;
-		default:
-			printf("UNKNOWN\n");
-			break;
-	}
-	printf("Frame rate: ");
-	switch (d->frame_rate) {
-		case PLUG417_DIGITAL_FRAME_RATE_50_60_HZ:
-			printf("50/60 Hz\n");
-			break;
-		case PLUG417_DIGITAL_FRAME_RATE_25_30_HZ:
-			printf("25/30 Hz\n");
-			break;
-		case PLUG417_DIGITAL_FRAME_RATE_9_HZ:
-			printf("9 Hz\n");
-			break;
-		default:
-			printf("UNKNOWN\n");
-			break;
-	}
-	printf("MIPI: %s\n", d->mipi ? "ON" : "OFF");
+	plug417_print_member_on_off("External synchronization",
+			d->external_sync);
+
+	plug417_print_member("Digital port", d->port, PLUG417_DIGITAL_PORT_MAX,
+			plug417_digital_port);
+
+	plug417_print_member("Output contents", d->format,
+			PLUG417_DIGITAL_FORMAT_MAX, plug417_digital_format);
+
+	plug417_print_member("Interface type", d->interface,
+			PLUG417_DIGITAL_INTERFACE_MAX, plug417_digital_interface);
+
+	plug417_print_member("Frame rate", d->frame_rate,
+			PLUG417_DIGITAL_FRAME_RATE_MAX, plug417_frame_rate);
+
+	plug417_print_member_on_off("MIPI", d->mipi);
+}
+
+/*
+ *
+ */
+static void plug417_print_algorithm_control_page_1(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+	struct plug417_alorithm_control_page_1 *a;
+
+	a = (struct plug417_alorithm_control_page_1 *)f->query.option;
+
+	printf("Algorithm control page 1\n");
+
+	plug417_print_member_on_off("Time-domain filtering", a->time_domain_filering);
+	plug417_print_digit("Filtering strength", a->filtering_strength);
+	plug417_print_member_on_off("Vertical strip removal", a->vertical_strip_removal);
+	plug417_print_digit("Vertical strip strength", a->vertical_strip_strength);
+	plug417_print_member_on_off("Sharpening", a->sharpening);
+	plug417_print_digit("Sharpening strength", a->sharpening_strength);
+	plug417_print_member("Dimming mode", a->dimming_mode,
+			PLUG417_ALGORITHM_DIMMING_MODE_MAX, plug417_alorithm_dimming_mode);
+	plug417_print_digit("Proportion of upper throwing point", a->proportion_upper_throwing_point);
+	plug417_print_digit("Proportion of lower throwing point", a->proportion_lower_throwing_point);
+	plug417_print_digit("Brightness", a->brightness);
+	plug417_print_digit("Contrast", a->contrast);
+	plug417_print_digit("Hybrid dimming mapping", a->hybrid_dimming_mapping);
+}
+
+/*
+ *
+ */
+static void plug417_print_algorithm_control_page_2(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+	struct plug417_alorithm_control_page_2 *a;
+
+	a = (struct plug417_alorithm_control_page_2 *)f->query.option;
+	printf("Algorithm control page 2\n");
+
+	plug417_print_member_on_off("Y8 correction", a->y8_correction);
+	plug417_print_member("IDE/LOG", a->ide_log, 1, plug417_alorithm_ide_log);
+	plug417_print_member_on_off("IDE enhancement", a->ide_enhancement);
+	plug417_print_digit("IDE filtering level", a->ide_filtering_level);
+	plug417_print_digit("IDE detail gain", a->ide_detail_gain);
+	plug417_print_member_on_off("LOG enhancement", a->log_enhancement);
 }
 
 /*
@@ -270,7 +363,98 @@ static void plug417_print_video_page(struct plug417_serial *s)
 		case PLUG417_DIGITAL_VIDEO_PAGE:
 			plug417_print_digital_video_page(s);
 			break;
+		case PLUG417_ALGORITHM_SETTING_PAGE:
+			plug417_print_algorithm_control_page_1(s);
+			break;
+		case PLUG417_ALGORITHM_SETTING_PAGE + 1:
+			plug417_print_algorithm_control_page_2(s);
+			break;
 		default:
+			printf("Unknown video page %d\n", f->query.page);
+			break;
+	}
+}
+
+/*
+ *
+ */
+static void plug417_print_menu_function_page_1(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+	struct plug417_menu_function_page_1 *m;
+	int i;
+
+	m = (struct plug417_menu_function_page_1 *)f->query.option;
+	printf("Menu function page 1\n");
+	for (i =0 ; i < 2; i++) {
+		printf("Icon: %d\n", i);
+		plug417_print_member_on_off("\tdisplay", m->small_icon[i].display);
+		plug417_print_digit("\twidth", m->small_icon[i].width);
+		plug417_print_digit16("\tlocation setting X", m->small_icon[i].x);
+		plug417_print_digit16("\tlocation setting Y", m->small_icon[i].y);
+	}
+	plug417_print_digit("Small icon transparency setting", m->small_icon_transparency);
+}
+
+/*
+ *
+ */
+static void plug417_print_application_page(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+
+	switch (f->query.page) {
+		case 0:
+			plug417_print_menu_function_page_1(s);
+			break;
+		case 1:
+			break;
+		default:
+			printf("Unknown menu function page %d\n", f->query.page);
+			break;
+	}
+}
+
+/*
+ *
+ */
+static void plug417_print_measurement_page_1(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+	struct plug417_measurement_page_1 *m;
+
+	m = (struct plug417_measurement_page_1 *)f->query.option;
+	printf("Temperature measurement page 1\n");
+	plug417_print_digit("The value of distance setting", m->distance);
+	plug417_print_digit("The value of emissivity setting", m->emissivity);
+	plug417_print_member("Temperature mode", m->temperature_mode, 2, plug417_temperature_mode);
+	plug417_print_member("Temperature unit", m->temperature_unit, 2, plug417_temperature_unit);
+	plug417_print_digit16("Min Corresponding Coordinate X", m->min_x);
+	plug417_print_digit16("Min Corresponding Coordinate Y", m->min_y);
+	plug417_print_digit16("Min Corresponding temperature after calibration", m->min_temperature_calibrated);
+	plug417_print_digit16("Max Corresponding Coordinate X", m->max_x);
+	plug417_print_digit16("Max Corresponding Coordinate Y", m->max_y);
+	plug417_print_digit16("Max Corresponding temperature after calibration", m->max_temperature_calibrated);
+	plug417_print_digit16("Reflected temp", m->temperature_reflected);
+	plug417_print_digit("Humidity value", m->humidity);
+	plug417_print_digit("Temperature measurement range", m->temperature_range);
+}
+
+/*
+ *
+ */
+static void plug417_print_measurement_page(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+
+	switch (f->query.page) {
+		case 0:
+			plug417_print_measurement_page_1(s);
+			break;
+		case 1:
+			break;
+		default:
+			printf("Unknown measurement page %d\n", f->query.page);
 			break;
 	}
 }
@@ -288,6 +472,12 @@ int plug417_query_reply_print(struct plug417_serial *s)
 	switch (f->query.functional) {
 		case PLUG417_VIDEO_PAGE:
 			plug417_print_video_page(s);
+			break;
+		case PLUG417_TEMPERATURE_MEASUREMENT_PAGE:
+			plug417_print_measurement_page(s);
+			break;
+		case PLUG417_APPLICATION_PAGE:
+			plug417_print_application_page(s);
 			break;
 		default:
 			printf("Unknown query page returned %d\n", f->query.functional);

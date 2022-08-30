@@ -21,10 +21,13 @@ extern "C" {
 #define PLUG417_APPLICATION_PAGE		3
 #define PLUG417_TEMPERATURE_MEASUREMENT_PAGE	4
 #define PLUG417_EXPERT_PAGE			5
+#define PLUG417_PAGE_MAX			PLUG417_EXPERT_PAGE
 
 #define PLUG417_ANALOG_VIDEO_PAGE		0
 #define PLUG417_DIGITAL_VIDEO_PAGE		1
 #define PLUG417_ALGORITHM_SETTING_PAGE		2
+#define PLUG417_ALGORITHM_CONTROL_PAGE_2	3
+#define PLUG417_VIDEO_PAGE_MAX			PLUG417_ALGORITHM_CONTROL_PAGE_2
 
 /*
  * Setup page
@@ -120,6 +123,7 @@ struct plug417_analog_video_page {
 	uint8_t frame_rate;
 	uint8_t pseudo_color;
 	uint8_t mirror;
+	uint8_t ezoom;
 	uint16_t zoom_x;
 	uint16_t zoom_y;
 	uint16_t hotspot_track;
@@ -130,10 +134,18 @@ struct plug417_analog_video_page {
 #define PLUG417_ANALOG_N_SYSTEM_320_240			1
 #define PLUG417_ANALOG_P_SYSTEM_360_288			2
 #define PLUG417_ANALOG_N_SYSTEM_360_240			3
+#define PLUG417_ANALOG_VIDEO_SYSTEM_MAX			PLUG417_ANALOG_N_SYSTEM_360_240
 
 #define PLUG417_ANALOG_FRAME_RATE_50_60_HZ		0
 #define PLUG417_ANALOG_FRAME_RATE_25_30_HZ		1
 #define PLUG417_ANALOG_FRAME_RATE_9_HZ			2
+#define PLUG417_ANALOG_FRAME_RATE_MAX			PLUG417_ANALOG_FRAME_RATE_9_HZ
+
+#define PLUG417_ANALOG_MIRROR_NO			0
+#define PLUG417_ANALOG_MIRROR_X				1
+#define PLUG417_ANALOG_MIRROR_Y				2
+#define PLUG417_ANALOG_MIRROR_X_Y			3
+#define PLUG417_ANALOG_MIRROR_MAX			PLUG417_ANALOG_MIRROR_X_Y
 
 struct plug417_digital_video_page {
 	uint8_t external_sync;
@@ -148,6 +160,7 @@ struct plug417_digital_video_page {
 #define PLUG417_DIGITAL_PORT_OFF			0
 #define PLUG417_DIGITAL_PORT_BT_656			1
 #define PLUG417_DIGITAL_PORT_CMOS			2
+#define PLUG417_DIGITAL_PORT_MAX			PLUG417_DIGITAL_PORT_CMOS
 
 #define PLUG417_DIGITAL_FORMAT_YUV422			0
 #define PLUG417_DIGITAL_FORMAT_YUV422_PARAM_LINE	1
@@ -155,15 +168,82 @@ struct plug417_digital_video_page {
 #define PLUG417_DIGITAL_FORMAT_YUV16_PARAM_LINE		3
 #define PLUG417_DIGITAL_FORMAT_Y16_YUV422		4
 #define PLUG417_DIGITAL_FORMAT_Y16_PARAM_LINE_YUV422	5
+#define PLUG417_DIGITAL_FORMAT_MAX			PLUG417_DIGITAL_FORMAT_Y16_PARAM_LINE_YUV422
 
 #define PLUG417_DIGITAL_INTERFACE_CMOS16		0
 #define PLUG417_DIGITAL_INTERFACE_CMOS8_MSB		1
 #define PLUG417_DIGITAL_INTERFACE_CMOS8_LSB		2
+#define PLUG417_DIGITAL_INTERFACE_MAX			PLUG417_DIGITAL_INTERFACE_CMOS8_LSB
 
 #define PLUG417_DIGITAL_FRAME_RATE_50_60_HZ		0
 #define PLUG417_DIGITAL_FRAME_RATE_25_30_HZ		1
 #define PLUG417_DIGITAL_FRAME_RATE_9_HZ			2
+#define PLUG417_DIGITAL_FRAME_RATE_MAX			PLUG417_DIGITAL_FRAME_RATE_9_HZ
 
+struct plug417_alorithm_control_page_1 {
+	uint8_t time_domain_filering;
+	uint8_t filtering_strength;
+	uint8_t vertical_strip_removal;
+	uint8_t vertical_strip_strength;
+	uint8_t sharpening;
+	uint8_t sharpening_strength;
+	uint8_t dimming_mode;
+	uint8_t proportion_upper_throwing_point;
+	uint8_t proportion_lower_throwing_point;
+	uint8_t brightness;
+	uint8_t contrast;
+	uint8_t hybrid_dimming_mapping;
+} __attribute__((packed));
+
+#define PLUG417_ALGORITHM_LEVEL_0		0
+#define PLUG417_ALGORITHM_LEVEL_1		1
+#define PLUG417_ALGORITHM_LEVEL_2		2
+#define PLUG417_ALGORITHM_LEVEL_3		3
+#define PLUG417_ALGORITHM_LEVEL_4		4
+#define PLUG417_ALGORITHM_LEVEL_MAX		PLUG417_ALGORITHM_LEVEL_4
+
+#define PLUG417_ALGORITHM_DIMMING_MODE_LINEAR	0
+#define PLUG417_ALGORITHM_DIMMING_MODE_PLATFORM	1
+#define PLUG417_ALGORITHM_DIMMING_MODE_HYBRID	2
+#define PLUG417_ALGORITHM_DIMMING_MODE_MAX	PLUG417_ALGORITHM_DIMMING_MODE_HYBRID
+
+struct plug417_alorithm_control_page_2 {
+	uint8_t y8_correction;
+	uint8_t y8_correction_expectation;
+	uint8_t ide_log;
+	uint8_t ide_enhancement;
+	uint8_t ide_filtering_level;
+	uint8_t ide_detail_gain;
+	uint8_t log_enhancement;
+} __attribute__((packed));
+
+struct plug417_menu_function_page_1 {
+	struct {
+		uint8_t display;
+		uint8_t width;
+		uint16_t x;
+		uint16_t y;
+	} __attribute__((packed)) small_icon[2];
+	uint8_t small_icon_transparency;
+} __attribute__((packed));
+
+struct plug417_measurement_page_1 {
+	uint8_t distance;
+	uint8_t emissivity;
+	uint8_t temperature_mode;
+	uint8_t temperature_unit;
+	uint8_t reserved[2];
+	uint16_t min_x;
+	uint16_t min_y;
+	uint16_t min_temperature_calibrated;
+	uint16_t max_x;
+	uint16_t max_y;
+	uint16_t max_temperature_calibrated;
+	uint16_t temperature_reflected;
+	uint8_t humidity;
+	uint8_t temperature_range;
+	uint8_t rsrv1;
+} __attribute__((packed));
 
 struct plug417_command {
 	uint8_t functional;

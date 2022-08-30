@@ -43,7 +43,7 @@ static void usage(char **argv)
 	printf("Usage: %s <options>\n", argv[0]);
 	printf("\t-d --device <path>\tSerial device name, default %s\n", DEFAULT_DEVICE_NAME);
 	printf("\t-g --get <0..4\tQuery page, default action if parameters not specified print sensor status\n");
-	printf("\t-p --page <0..2>\tQuery page\n");
+	printf("\t-p --page <0..3>\tQuery page\n");
 	printf("\t-e --cmos_i <0..%d>\tSet CMOS interface type\n", PLUG417_COMMAND_CMOS_INTERFACE_MAX);
 	printf("\t-f --cmos_c <0..%d>\tSet CMOS content\n", PLUG417_COMMAND_CMOS_CONTENT_MAX);
 	printf("\t-c --color <0..%d>\tSet pseudo color\n", PLUG417_COMMAND_COLOR_MAX);
