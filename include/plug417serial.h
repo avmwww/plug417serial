@@ -263,6 +263,20 @@ int plug417_set_brightness(struct plug417_serial *s, unsigned int brightness);
 
 int plug417_set_contrast(struct plug417_serial *s, unsigned int contrast);
 
+
+#define PLUG417_SERIAL_DEBUG			10
+#define PLUG417_HANDSHAKE_DEBUG			9
+
+#ifdef DEBUG
+void debug(int level, const char *fmt, ...);
+void dump_buf(int level, const void *buf, int size);
+int plug417serial_debug_level_set(int level);
+#else
+static inline void debug(int level, const char *fmt, ...) {}
+static inline void dump_buf(int level, const void *buf, int size) {}
+static inline int plug417serial_debug_level_set(int level) { return 0; }
+#endif
+
 #ifdef __cplusplus
 }
 #endif

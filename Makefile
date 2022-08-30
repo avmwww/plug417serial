@@ -5,9 +5,9 @@
 CC = $(CROSS_COMPILE)gcc
 AR = $(CROSS_COMPILE)ar
 
-TARGET = plug417serial.a
+TARGETS = plug417serial.a plug417serial.so plug417ctrl
 
-SRCS = plug417serial.c
+SRCS = plug417serial.c plug417print.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -20,19 +20,19 @@ INDENT_FLAGS = -nbad -bap -nbc -bbo -hnl -br -brs -c33 -cd33 -ncdb -ce -ci4 \
 		-cli0 -d0 -di1 -nfc1 -i8 -ip0 -l80 -lp -npcs -nprs -npsl -sai \
 		-saf -saw -ncs -nsc -sob -nfca -cp33 -ss -ts8 -il1
 
-all: $(TARGET) test
+all: $(TARGETS)
 
 plug417serial.so: $(OBJS)
 	$(CC) ${LDFLAGS} -shared -o $@ $^
 
-$(TARGET): $(OBJS)
+plug417serial.a: $(OBJS)
 	$(AR) -rcs $@ $^
 
-test: $(OBJS) test.o
+plug417ctrl: $(OBJS) plug417ctrl.o
 	$(CC) ${LDFLAGS} -o $@ $^
 
 clean:
-	rm -f $(TARGET) $(OBJS)
+	rm -f $(TARGETS) $(OBJS)
 
 #.PHONY: %.i
 
