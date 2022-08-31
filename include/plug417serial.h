@@ -23,11 +23,23 @@ extern "C" {
 #define PLUG417_EXPERT_PAGE			5
 #define PLUG417_PAGE_MAX			PLUG417_EXPERT_PAGE
 
+/*
+ * Video page
+ */
 #define PLUG417_ANALOG_VIDEO_PAGE		0
 #define PLUG417_DIGITAL_VIDEO_PAGE		1
 #define PLUG417_ALGORITHM_SETTING_PAGE		2
 #define PLUG417_ALGORITHM_CONTROL_PAGE_2	3
 #define PLUG417_VIDEO_PAGE_MAX			PLUG417_ALGORITHM_CONTROL_PAGE_2
+
+/*
+ * Application page
+ */
+#define PLUG417_FOCUSING_PAGE			0
+#define PLUG417_DEFECTIVE_PIXEL_CORRECTION_PAGE	1
+#define PLUG417_MENU_PAGE_1			2
+#define PLUG417_MENU_PAGE_2			3
+#define PLUG417_AREA_ANALYSIS_PAGE		4
 
 /*
  * Setup page
@@ -225,6 +237,23 @@ struct plug417_menu_function_page_1 {
 		uint16_t y;
 	} __attribute__((packed)) small_icon[2];
 	uint8_t small_icon_transparency;
+} __attribute__((packed));
+
+typedef struct _uint24_t {
+	uint32_t value : 24;
+} __attribute__((packed)) uint24_t;
+
+struct plug417_menu_function_page_2 {
+	uint8_t menu_bar_display;
+	uint16_t menu_bar_location;
+	uint8_t menu_bar_transparency_level;
+	uint8_t layer_display;
+	uint8_t layer_transparency;
+	uint8_t half_pixel_cursor;
+	uint16_t half_pixel_cursor_lacation_x;
+	uint16_t half_pixel_cursor_lacation_y;
+	uint24_t half_pixel_color_label;
+	uint8_t reserved[3];
 } __attribute__((packed));
 
 struct plug417_measurement_page_1 {

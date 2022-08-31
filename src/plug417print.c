@@ -236,6 +236,13 @@ static void plug417_print_digit16(const char *fmt, unsigned int member)
 	printf("%s: %d\n", fmt, be16toh(member));
 }
 
+/*
+ *
+ */
+static void plug417_print_digit24(const char *fmt, unsigned int member)
+{
+	printf("%s: %d\n", fmt, be32toh(member) >> 8);
+}
 
 /*
  *
@@ -399,15 +406,37 @@ static void plug417_print_menu_function_page_1(struct plug417_serial *s)
 /*
  *
  */
+static void plug417_print_menu_function_page_2(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+	struct plug417_menu_function_page_2 *m;
+
+	m = (struct plug417_menu_function_page_2 *)f->query.option;
+	printf("Menu function page 2\n");
+	plug417_print_member_on_off("Menu bar display", m->menu_bar_display);
+	plug417_print_digit16("Menu bar location setting", m->menu_bar_location);
+	plug417_print_digit("Menu bar transparency level", m->menu_bar_transparency_level);
+	plug417_print_member_on_off("Layer display", m->layer_display);
+	plug417_print_digit("Layer transparency setting", m->layer_transparency);
+	plug417_print_member_on_off("Half pixel cursor", m->half_pixel_cursor);
+	plug417_print_digit16("Half pixel cursor location setting X", m->half_pixel_cursor_lacation_x);
+	plug417_print_digit16("Half pixel cursor location setting Y", m->half_pixel_cursor_lacation_y);
+	plug417_print_digit24("Half pixel color label", m->half_pixel_color_label.value);
+}
+
+/*
+ *
+ */
 static void plug417_print_application_page(struct plug417_serial *s)
 {
 	struct plug417_frame *f = &s->frame;
 
 	switch (f->query.page) {
-		case 0:
+		case PLUG417_MENU_PAGE_1:
 			plug417_print_menu_function_page_1(s);
 			break;
-		case 1:
+		case PLUG417_MENU_PAGE_2:
+			plug417_print_menu_function_page_2(s);
 			break;
 		default:
 			printf("Unknown menu function page %d\n", f->query.page);
