@@ -40,6 +40,7 @@ extern "C" {
 #define PLUG417_MENU_PAGE_1			2
 #define PLUG417_MENU_PAGE_2			3
 #define PLUG417_AREA_ANALYSIS_PAGE		4
+#define PLUG417_HOTSPOT_TRACKING_PAGE		5
 
 /*
  * Setup page
@@ -123,6 +124,13 @@ extern "C" {
 #define PLUG417_COMMAND_CMOS_INTERFACE_MAX			PLUG417_COMMAND_CMOS_INTERFACE_CMOS8_LSB
 
 /* Algorithm */
+#define PLUG417_OPTION_SMALL_ICON_ON(x)			(1 + (x) * 4)
+#define PLUG417_OPTION_SMALL_ICON_WIDTH(x)		(2 + (x) * 4)
+#define PLUG417_OPTION_SMALL_ICON_X(x)			(3 + (x) * 4)
+#define PLUG417_OPTION_SMALL_ICON_Y(x)			(4 + (x) * 4)
+#define PLUG417_OPTION_SMALL_ICON_TRANSPARENCY		9
+
+#define PLUG417_OPTION_HALF_PIXEL_COLOR_SETTING		12
 #define PLUG417_OPTION_BRIGHTNESS			0x0a
 #define PLUG417_OPTION_CONTRAST				0x0b
 
@@ -256,6 +264,41 @@ struct plug417_menu_function_page_2 {
 	uint8_t reserved[3];
 } __attribute__((packed));
 
+struct plug417_area_analysis_page {
+	uint8_t analysis;
+	uint16_t x;
+	uint16_t y;
+	uint16_t width;
+	uint16_t height;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+	uint8_t high_temperature_alarm;
+	uint16_t high_temperature_alarm_threshold;
+	uint8_t temperature_exceeds_alarm_threshold;
+	uint16_t coldest_x;
+	uint16_t coldest_y;
+	uint16_t coldest_temperature_y16;
+	uint16_t hottest_x;
+	uint16_t hottest_y;
+	uint16_t hottest_temperature_y16;
+	uint16_t cursor_x;
+	uint16_t cursor_y;
+	uint16_t cursor_temperature_y16;
+	uint16_t regional_temperature_y16;
+	uint8_t reserved[2];
+} __attribute__((packed));
+
+struct plug417_hotspot_tracking_page {
+	uint8_t cursor;
+	uint16_t upper_limit;
+	uint16_t lower_limit;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+	uint8_t reserved[3];
+} __attribute__((packed));
+
 struct plug417_measurement_page_1 {
 	uint8_t distance;
 	uint8_t emissivity;
@@ -372,6 +415,15 @@ int plug417_set_brightness(struct plug417_serial *s, unsigned int brightness);
 
 int plug417_set_contrast(struct plug417_serial *s, unsigned int contrast);
 
+int plug417_set_small_icon_on(struct plug417_serial *s, unsigned int num, unsigned int on);
+
+int plug417_set_small_icon_width(struct plug417_serial *s, unsigned int num, unsigned int width);
+
+int plug417_set_small_icon_x(struct plug417_serial *s, unsigned int num, unsigned int x);
+
+int plug417_set_small_icon_y(struct plug417_serial *s, unsigned int num, unsigned int y);
+
+int plug417_set_small_icon_transparency(struct plug417_serial *s, unsigned int t);
 
 #define PLUG417_SERIAL_DEBUG			10
 #define PLUG417_HANDSHAKE_DEBUG			9

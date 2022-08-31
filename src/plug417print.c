@@ -202,6 +202,15 @@ static const char *plug417_temperature_unit[] = {
 	"°K",
 };
 
+static const char *plug417_analisys_area[] = {
+	"Disable",
+	"Full screen",
+	"Area 1",
+	"Area 2",
+	"Area 3",
+};
+
+
 /*
  *
  */
@@ -427,6 +436,65 @@ static void plug417_print_menu_function_page_2(struct plug417_serial *s)
 /*
  *
  */
+static void plug417_print_area_analysis_page(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+	struct plug417_area_analysis_page *a;
+
+	a = (struct plug417_area_analysis_page *)f->query.option;
+	printf("Area analysis page\n");
+	plug417_print_member("Analysis", a->analysis, 4, plug417_analisys_area);
+	plug417_print_digit16("Starting coordinate X", a->x);
+	plug417_print_digit16("Starting coordinate Y", a->y);
+	plug417_print_digit16("Area width", a->width);
+	plug417_print_digit16("Area height", a->height);
+	plug417_print_digit("Color Component R", a->r);
+	plug417_print_digit("Color Component G", a->g);
+	plug417_print_digit("Color Component B", a->b);
+	plug417_print_member_on_off("High temperature alarm",
+			a->high_temperature_alarm);
+	plug417_print_digit16("High temperature alarm threshold",
+			a->high_temperature_alarm_threshold);
+	plug417_print_member_on_off("Temperature exceeds alarm threshold",
+			a->temperature_exceeds_alarm_threshold);
+	plug417_print_digit16("Coldest point X coordinate", a->coldest_x);
+	plug417_print_digit16("Coldest point Y coordinate", a->coldest_y);
+	plug417_print_digit16("Coldest point temperature measurement / observation Y16",
+			a->coldest_temperature_y16);
+	plug417_print_digit16("Hottest X coordinate", a->hottest_x);
+	plug417_print_digit16("Hottest Y coordinate", a->hottest_y);
+	plug417_print_digit16("Hottest temperature measurement / observation Y16",
+			a->hottest_temperature_y16);
+	plug417_print_digit16("Cursor X coordinate", a->cursor_x);
+	plug417_print_digit16("Cursor Y coordinate", a->cursor_y);
+	plug417_print_digit16("Cursor temperature measurement / observation Y16",
+			a->cursor_temperature_y16);
+	plug417_print_digit16("Regional average temperature measurement / observation Y16",
+			a->regional_temperature_y16);
+}
+
+/*
+ *
+ */
+static void plug417_print_hotspot_tracking_page(struct plug417_serial *s)
+{
+	struct plug417_frame *f = &s->frame;
+	struct plug417_hotspot_tracking_page *h;
+
+	h = (struct plug417_hotspot_tracking_page *)f->query.option;
+	printf("Hotspot tracking page\n");
+	plug417_print_member_on_off("Hottest cursor", h->cursor & 1);
+	plug417_print_member_on_off("Coldest cursor", h->cursor & 2);
+	plug417_print_digit16("Hotspot tracking upper limit", h->upper_limit);
+	plug417_print_digit16("Hotspot tracking lower limit", h->lower_limit);
+	plug417_print_digit("Hottest cursor color component R", h->r);
+	plug417_print_digit("Hottest cursor color component G", h->g);
+	plug417_print_digit("Hottest cursor color component B", h->b);
+}
+
+/*
+ *
+ */
 static void plug417_print_application_page(struct plug417_serial *s)
 {
 	struct plug417_frame *f = &s->frame;
@@ -437,6 +505,12 @@ static void plug417_print_application_page(struct plug417_serial *s)
 			break;
 		case PLUG417_MENU_PAGE_2:
 			plug417_print_menu_function_page_2(s);
+			break;
+		case PLUG417_AREA_ANALYSIS_PAGE:
+			plug417_print_area_analysis_page(s);
+			break;
+		case PLUG417_HOTSPOT_TRACKING_PAGE:
+			plug417_print_hotspot_tracking_page(s);
 			break;
 		default:
 			printf("Unknown menu function page %d\n", f->query.page);

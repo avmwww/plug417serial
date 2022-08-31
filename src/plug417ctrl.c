@@ -25,6 +25,7 @@ struct plug417 {
 	int cmos_interace;
 	int brightness;
 	const char *device;
+	const char *command;
 };
 
 static void fatal(const char *fmt, ...)
@@ -42,8 +43,10 @@ static void usage(char **argv)
 {
 	printf("Usage: %s <options>\n", argv[0]);
 	printf("\t-d --device <path>\tSerial device name, default %s\n", DEFAULT_DEVICE_NAME);
-	printf("\t-g --get <0..4\tQuery page, default action if parameters not specified print sensor status\n");
-	printf("\t-p --page <0..3>\tQuery page\n");
+	printf("\t-g --get <0..%d\tQuery page, default action if parameters not specified print sensor status\n",
+			PLUG417_PAGE_MAX);
+	printf("\t-s --set <0..5>\tSet functional classification\n");
+	printf("\t-p --page <0..5>\tPage\n");
 	printf("\t-e --cmos_i <0..%d>\tSet CMOS interface type\n", PLUG417_COMMAND_CMOS_INTERFACE_MAX);
 	printf("\t-f --cmos_c <0..%d>\tSet CMOS content\n", PLUG417_COMMAND_CMOS_CONTENT_MAX);
 	printf("\t-c --color <0..%d>\tSet pseudo color\n", PLUG417_COMMAND_COLOR_MAX);
@@ -67,11 +70,49 @@ static struct option plug417_options[] = {
 	{"get",        required_argument, 0,  'g' },
 	{"mirror",     required_argument, 0,  'm' },
 	{"page",       required_argument, 0,  'p' },
+	{"command",    required_argument, 0,  'r' },
+	{"set",        required_argument, 0,  's' },
 	{"test",       required_argument, 0,  't' },
 	{"verbose",    required_argument, 0,  'v' },
 	{"help",       no_argument,       0,  'h' },
 	{0,            0,                 0,   0  }
 };
+
+/*
+ * a:b:c ...
+ *
+ * Example:
+ *  n=1:w=10:h=22
+ */
+static const char *parse_elm(const char *buf, char *elm, char *val, int size)
+{
+	const char *p = buf;
+
+	*val = '\0';
+	while (*p != ':' && *p != '=' && *p != '\0' && size != 0) {
+		*elm++ = *p++;
+		size--;
+	}
+	*elm = '\0';
+
+	if (*p == ':') {
+		p++;
+		return p;
+	}
+	if (*p == '=')
+		p++;
+
+	while (*p != ':' && *p != '=' && *p != '\0' && size != 0) {
+		*val++ = *p++;
+		size--;
+	}
+	*val = '\0';
+
+	if (*p == ':' || *p == '=')
+		p++;
+	
+	return p;
+}
 
 /*
  *
@@ -81,7 +122,7 @@ static int parse_opt(int argc, char **argv, struct plug417 *plug)
 	int c;
 	int optindex = 0;
 
-	while ((c = getopt_long(argc, argv, "b:c:d:e:f:g:m:p:t:v:h", plug417_options, &optindex)) != -1) {
+	while ((c = getopt_long(argc, argv, "b:c:d:e:f:g:m:p:r:t:v:h", plug417_options, &optindex)) != -1) {
 		switch (c) {
 			case 'v':
 				plug417serial_debug_level_set(strtol(optarg, NULL, 0));
@@ -113,6 +154,9 @@ static int parse_opt(int argc, char **argv, struct plug417 *plug)
 			case 't':
 				plug->test_screen = strtol(optarg, NULL, 0);
 				break;
+			case 'r':
+				plug->command = optarg;
+				break;
 			case 'h':
 				usage(argv);
 				break;
@@ -135,7 +179,52 @@ static int parse_opt(int argc, char **argv, struct plug417 *plug)
 	return 0;
 }
 
+void plug417_set_command(struct plug417_serial *s, const char *cmd)
+{
+	char parm[64];
+	char val[64];
+	const char *c = cmd;
 
+	c = parse_elm(c, parm, val, sizeof(parm));
+	debug(20, "P = %s, V = %s\n", parm, val);
+	if (!strcmp(parm, "icon")) {
+		int num = 0;
+		int width = -1, x = -1, y = -1, on = -1, trans = -1;
+
+
+		while (*c != '\0') {
+			c = parse_elm(c, parm, val, sizeof(parm));
+			debug(20, "P = %s, V = %s\n", parm, val);
+			if (!strcmp(parm, "on"))
+				on = 1;
+			if (!strcmp(parm, "off"))
+				on = 0;
+
+			if (!strcmp(parm, "n") || !strcmp(parm, "num"))
+				num = strtol(val, NULL, 0);
+			if (!strcmp(parm, "w") || !strcmp(parm, "width"))
+				width = strtol(val, NULL, 0);
+			if (!strcmp(parm, "x"))
+				x = strtol(val, NULL, 0);
+			if (!strcmp(parm, "y"))
+				y = strtol(val, NULL, 0);
+			if (!strcmp(parm, "t") || !strcmp(parm, "transparency"))
+				trans = strtol(val, NULL, 0);
+		}
+		debug(19, "Set small icon %d\n", num);
+
+		if (on >= 0)
+			plug417_set_small_icon_on(s, num, on);
+		if (width >= 0)
+			plug417_set_small_icon_width(s, num, width);
+		if (x >= 0)
+			plug417_set_small_icon_x(s, num, x);
+		if (y >= 0)
+			plug417_set_small_icon_y(s, num, y);
+		if (trans >= 0)
+			plug417_set_small_icon_transparency(s, trans);
+	}
+}
 
 /*
  *
@@ -202,6 +291,9 @@ int main(int argc, char **argv)
 
 	if (plug->brightness >= 0)
 		plug417_set_brightness(ps, plug->brightness);
+
+	if (plug->command)
+		plug417_set_command(ps, plug->command);
 
 	plug417_close(ps);
 

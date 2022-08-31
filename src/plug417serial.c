@@ -200,7 +200,7 @@ static int plug417_request(struct plug417_serial *s, uint8_t functional,
  */
 int plug417_query(struct plug417_serial *s, unsigned int func, unsigned int page)
 {
-	if (func > PLUG417_PAGE_MAX || page > PLUG417_VIDEO_PAGE_MAX)
+	if (func > PLUG417_PAGE_MAX)
 		return -1;
 
 	return plug417_request(s, func, page, 0x80, 0);
@@ -302,6 +302,51 @@ int plug417_set_contrast(struct plug417_serial *s, unsigned int contrast)
 
 	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_ALGORITHM_SETTING_PAGE,
 				PLUG417_OPTION_CONTRAST, contrast);
+}
+
+/*
+ *
+ */
+int plug417_set_small_icon_on(struct plug417_serial *s, unsigned int num, unsigned int on)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_SMALL_ICON_ON(num), on);
+}
+
+/*
+ *
+ */
+int plug417_set_small_icon_width(struct plug417_serial *s, unsigned int num, unsigned int width)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_SMALL_ICON_WIDTH(num), width);
+}
+
+/*
+ *
+ */
+int plug417_set_small_icon_x(struct plug417_serial *s, unsigned int num, unsigned int x)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_SMALL_ICON_X(num), x);
+}
+
+/*
+ *
+ */
+int plug417_set_small_icon_y(struct plug417_serial *s, unsigned int num, unsigned int y)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_SMALL_ICON_X(num), y);
+}
+
+/*
+ *
+ */
+int plug417_set_small_icon_transparency(struct plug417_serial *s, unsigned int t)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_SMALL_ICON_TRANSPARENCY, t);
 }
 
 /*
