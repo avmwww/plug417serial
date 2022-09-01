@@ -54,15 +54,27 @@ struct plug417_sub_cmd {
 	int set;
 };
 
+static const struct plug417_sub_cmd plug417_cmd_digital_video[] = {
+	{"extsync", "s", plug417_set_external_synchronization, NULL, -1},
+	{"port", "p", plug417_set_digital_port_parallel_type, NULL, -1},
+	{"cmos", "c", plug417_set_cmos_content, NULL, -1},
+	{"interface", "i", plug417_set_cmos_interface, NULL, -1},
+	{"rate", "r", plug417_set_digital_frame_rate, NULL, -1},
+	{"mipi", "m", plug417_set_mipi_on, NULL, -1},
+	{"scene", "x", plug417_set_scene_compentation, NULL, -1},
+	{"shutter", "z", plug417_set_shutter_compentation, NULL, -1},
+	{NULL},
+};
+
 static const struct plug417_sub_cmd plug417_cmd_small_icon[] = {
-	{"n", "num", NULL, NULL, -1},
+	{"num", "n", NULL, NULL, -1},
 	{"on", "", NULL, plug417_set_small_icon_on, 1},
 	{"off", "", NULL, plug417_set_small_icon_on, 0},
 	{"x", "", NULL, plug417_set_small_icon_x, -1},
 	{"y", "", NULL, plug417_set_small_icon_y, -1},
 	{"width", "w", NULL, plug417_set_small_icon_width, -1},
 	{"transparency", "t", plug417_set_small_icon_transparency, NULL, -1},
-	{NULL, NULL, NULL, NULL},
+	{NULL},
 };
 
 
@@ -122,6 +134,7 @@ struct plug417_cmd {
 };
 
 static const struct plug417_cmd plug417_cmd[] = {
+	{"Digital video", "digit", plug417_cmd_digital_video},
 	{"Small icon", "icon", plug417_cmd_small_icon},
 	{"Menu bar", "menu", plug417_cmd_menu_bar},
 	{"Layer", "layer", plug417_cmd_layer},

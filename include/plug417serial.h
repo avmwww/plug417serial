@@ -104,12 +104,12 @@ extern "C" {
 #define PLUG417_COMMAND_MIRROR_MAX			PLUG417_COMMAND_MIRROR_XY
 
 /* Digital */
-#define PLUG417_OPTION_EXTERNAL_SYNCHRONIZATION_SWITCH	1
+#define PLUG417_OPTION_EXTERNAL_SYNCHRONIZATION		1
 #define PLUG417_OPTION_DIGITAL_PORT_PARALLEL_TYPE	2
-#define PLUG417_OPTION_CMOS_CONTENT_SELECTION		3
+#define PLUG417_OPTION_CMOS_CONTENT			3
 #define PLUG417_OPTION_CMOS_INTERFACE_TYPE		4
-#define PLUG417_OPTION_DIGITAL_FRAME_RATE_SETTING	5
-#define PLUG417_OPTION_MIPI_SWITCH			6
+#define PLUG417_OPTION_DIGITAL_FRAME_RATE		5
+#define PLUG417_OPTION_MIPI_ON				6
 #define PLUG417_OPTION_SCENE_COMPENSATION		7
 #define PLUG417_OPTION_SHUTTER_COMPENSATION		8
 
@@ -441,9 +441,21 @@ int plug417_set_mirror_image(struct plug417_serial *s, unsigned int mirror);
 
 int plug417_set_test_screen(struct plug417_serial *s, unsigned int test);
 
+int plug417_set_external_synchronization(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_digital_port_parallel_type(struct plug417_serial *s, unsigned int v);
+
 int plug417_set_cmos_content(struct plug417_serial *s, unsigned int cmos);
 
 int plug417_set_cmos_interface(struct plug417_serial *s, unsigned int cmos);
+
+int plug417_set_digital_frame_rate(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_mipi_on(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_scene_compentation(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_shutter_compentation(struct plug417_serial *s, unsigned int v);
 
 int plug417_set_brightness(struct plug417_serial *s, unsigned int brightness);
 

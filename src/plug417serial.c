@@ -259,13 +259,28 @@ int plug417_set_test_screen(struct plug417_serial *s, unsigned int test)
 /*
  *
  */
+int plug417_set_external_synchronization(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_DIGITAL_VIDEO_PAGE,
+				PLUG417_OPTION_EXTERNAL_SYNCHRONIZATION, v);
+}
+
+/*
+ *
+ */
+int plug417_set_digital_port_parallel_type(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_DIGITAL_VIDEO_PAGE,
+				PLUG417_OPTION_DIGITAL_PORT_PARALLEL_TYPE, v);
+}
+
+/*
+ *
+ */
 int plug417_set_cmos_content(struct plug417_serial *s, unsigned int cmos)
 {
-	if (cmos > PLUG417_COMMAND_CMOS_CONTENT_MAX)
-		return -1;
-
 	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_DIGITAL_VIDEO_PAGE,
-				PLUG417_OPTION_CMOS_CONTENT_SELECTION, cmos);
+				PLUG417_OPTION_CMOS_CONTENT, cmos);
 }
 
 /*
@@ -273,11 +288,44 @@ int plug417_set_cmos_content(struct plug417_serial *s, unsigned int cmos)
  */
 int plug417_set_cmos_interface(struct plug417_serial *s, unsigned int cmos)
 {
-	if (cmos > PLUG417_COMMAND_CMOS_INTERFACE_MAX)
-		return -1;
-
 	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_DIGITAL_VIDEO_PAGE,
 				PLUG417_OPTION_CMOS_INTERFACE_TYPE, cmos);
+}
+
+/*
+ *
+ */
+int plug417_set_digital_frame_rate(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_DIGITAL_VIDEO_PAGE,
+				PLUG417_OPTION_DIGITAL_FRAME_RATE, v);
+}
+
+/*
+ *
+ */
+int plug417_set_mipi_on(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_DIGITAL_VIDEO_PAGE,
+				PLUG417_OPTION_MIPI_ON, v);
+}
+
+/*
+ *
+ */
+int plug417_set_scene_compentation(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_DIGITAL_VIDEO_PAGE,
+				PLUG417_OPTION_SCENE_COMPENSATION, v);
+}
+
+/*
+ *
+ */
+int plug417_set_shutter_compentation(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_VIDEO_PAGE, PLUG417_DIGITAL_VIDEO_PAGE,
+				PLUG417_OPTION_SHUTTER_COMPENSATION, v);
 }
 
 /*
