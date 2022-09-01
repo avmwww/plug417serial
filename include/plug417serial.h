@@ -42,6 +42,9 @@ extern "C" {
 #define PLUG417_AREA_ANALYSIS_PAGE		4
 #define PLUG417_HOTSPOT_TRACKING_PAGE		5
 
+#define PLUG417_SET_AREA_ANALYSIS_PAGE		3
+#define PLUG417_SET_HOTSPOT_TRACKING_PAGE	4
+
 /*
  * Setup page
  */
@@ -129,8 +132,36 @@ extern "C" {
 #define PLUG417_OPTION_SMALL_ICON_X(x)			(3 + (x) * 4)
 #define PLUG417_OPTION_SMALL_ICON_Y(x)			(4 + (x) * 4)
 #define PLUG417_OPTION_SMALL_ICON_TRANSPARENCY		9
+#define PLUG417_OPTION_MENU_BAR_ON			10
+#define PLUG417_OPTION_MENU_BAR_LOCATION		11
+#define PLUG417_OPTION_MENU_BAR_TRANSPARENCY		12
+#define PLUG417_OPTION_LAYER_ON				13
+#define PLUG417_OPTION_LAYER_TRANSPARENCY		14
+#define PLUG417_OPTION_HALF_PIXEL_CURSOR_ON		15
+#define PLUG417_OPTION_HALF_PIXEL_X			16
+#define PLUG417_OPTION_HALF_PIXEL_Y			17
+#define PLUG417_OPTION_HALF_PIXEL_COLOR			18
 
-#define PLUG417_OPTION_HALF_PIXEL_COLOR_SETTING		12
+/* Area Analysis */
+#define PLUG417_OPTION_AREA_ANALISYS_MODE		1
+#define PLUG417_OPTION_AREA_X				2
+#define PLUG417_OPTION_AREA_Y				3
+#define PLUG417_OPTION_AREA_WIDTH			4
+#define PLUG417_OPTION_AREA_HEIGHT			5
+#define PLUG417_OPTION_AREA_COLOR_R			6
+#define PLUG417_OPTION_AREA_COLOR_G			7
+#define PLUG417_OPTION_AREA_COLOR_B			8
+#define PLUG417_OPTION_AREA_HIGH_TEMP_ALARM		9
+#define PLUG417_OPTION_AREA_HIGH_TEMP_ALARM_THRESHOLD	10
+
+/* Hotspot tracking */
+#define PLUG417_OPTION_HOTTEST_CURSOR_ON		1
+#define PLUG417_OPTION_HOTSPOT_TRACKING_UPPER		3
+#define PLUG417_OPTION_HOTSPOT_TRACKING_LOWER		4
+#define PLUG417_OPTION_HOTTEST_CURSOR_R			5
+#define PLUG417_OPTION_HOTTEST_CURSOR_G			6
+#define PLUG417_OPTION_HOTTEST_CURSOR_B			7
+
 #define PLUG417_OPTION_BRIGHTNESS			0x0a
 #define PLUG417_OPTION_CONTRAST				0x0b
 
@@ -248,7 +279,10 @@ struct plug417_menu_function_page_1 {
 } __attribute__((packed));
 
 typedef struct _uint24_t {
-	uint32_t value : 24;
+	union {
+		uint32_t value : 24;
+		uint8_t v8[3];
+	} __attribute__((packed));
 } __attribute__((packed)) uint24_t;
 
 struct plug417_menu_function_page_2 {
@@ -425,8 +459,62 @@ int plug417_set_small_icon_y(struct plug417_serial *s, unsigned int num, unsigne
 
 int plug417_set_small_icon_transparency(struct plug417_serial *s, unsigned int t);
 
+int plug417_set_menu_bar_on(struct plug417_serial *s, unsigned int on);
+
+int plug417_set_menu_bar_location(struct plug417_serial *s, unsigned int y);
+
+int plug417_set_menu_bar_transparency(struct plug417_serial *s, unsigned int t);
+
+int plug417_set_layer_on(struct plug417_serial *s, unsigned int on);
+
+int plug417_set_layer_transparency(struct plug417_serial *s, unsigned int t);
+
+int plug417_set_half_pixel_cursor_on(struct plug417_serial *s, unsigned int on);
+
+int plug417_set_half_pixel_x(struct plug417_serial *s, unsigned int x);
+
+int plug417_set_half_pixel_y(struct plug417_serial *s, unsigned int y);
+
+int plug417_set_half_pixel_color(struct plug417_serial *s, unsigned int c);
+
+int plug417_set_hotspot_tracking_cursor_on(struct plug417_serial *s, unsigned int on);
+
+int plug417_set_hotspot_tracking_upper_limit(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_hotspot_tracking_lower_limit(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_hotspot_tracking_color_r(struct plug417_serial *s, unsigned int c);
+
+int plug417_set_hotspot_tracking_color_g(struct plug417_serial *s, unsigned int c);
+
+int plug417_set_hotspot_tracking_color_b(struct plug417_serial *s, unsigned int c);
+
+int plug417_set_area_analisys_mode(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_area_x(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_area_y(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_area_width(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_area_height(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_area_color_r(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_area_color_g(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_area_color_b(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_area_high_temperature_alarm(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_area_high_temperature_alarm_threshold(struct plug417_serial *s, unsigned int v);
+
+/*
+ * Debug
+ */
 #define PLUG417_SERIAL_DEBUG			10
 #define PLUG417_HANDSHAKE_DEBUG			9
+#define PLUG417_CMD_PARSE_DEBUG			20
 
 #ifdef DEBUG
 void debug(int level, const char *fmt, ...);

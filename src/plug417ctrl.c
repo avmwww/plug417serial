@@ -12,6 +12,7 @@
 #include <endian.h>
 
 #include "plug417serial.h"
+#include "plug417cmd.h"
 
 #define DEFAULT_DEVICE_NAME		"/dev/ttyACM0"
 
@@ -79,42 +80,6 @@ static struct option plug417_options[] = {
 };
 
 /*
- * a:b:c ...
- *
- * Example:
- *  n=1:w=10:h=22
- */
-static const char *parse_elm(const char *buf, char *elm, char *val, int size)
-{
-	const char *p = buf;
-
-	*val = '\0';
-	while (*p != ':' && *p != '=' && *p != '\0' && size != 0) {
-		*elm++ = *p++;
-		size--;
-	}
-	*elm = '\0';
-
-	if (*p == ':') {
-		p++;
-		return p;
-	}
-	if (*p == '=')
-		p++;
-
-	while (*p != ':' && *p != '=' && *p != '\0' && size != 0) {
-		*val++ = *p++;
-		size--;
-	}
-	*val = '\0';
-
-	if (*p == ':' || *p == '=')
-		p++;
-	
-	return p;
-}
-
-/*
  *
  */
 static int parse_opt(int argc, char **argv, struct plug417 *plug)
@@ -177,53 +142,6 @@ static int parse_opt(int argc, char **argv, struct plug417 *plug)
 #endif
 
 	return 0;
-}
-
-void plug417_set_command(struct plug417_serial *s, const char *cmd)
-{
-	char parm[64];
-	char val[64];
-	const char *c = cmd;
-
-	c = parse_elm(c, parm, val, sizeof(parm));
-	debug(20, "P = %s, V = %s\n", parm, val);
-	if (!strcmp(parm, "icon")) {
-		int num = 0;
-		int width = -1, x = -1, y = -1, on = -1, trans = -1;
-
-
-		while (*c != '\0') {
-			c = parse_elm(c, parm, val, sizeof(parm));
-			debug(20, "P = %s, V = %s\n", parm, val);
-			if (!strcmp(parm, "on"))
-				on = 1;
-			if (!strcmp(parm, "off"))
-				on = 0;
-
-			if (!strcmp(parm, "n") || !strcmp(parm, "num"))
-				num = strtol(val, NULL, 0);
-			if (!strcmp(parm, "w") || !strcmp(parm, "width"))
-				width = strtol(val, NULL, 0);
-			if (!strcmp(parm, "x"))
-				x = strtol(val, NULL, 0);
-			if (!strcmp(parm, "y"))
-				y = strtol(val, NULL, 0);
-			if (!strcmp(parm, "t") || !strcmp(parm, "transparency"))
-				trans = strtol(val, NULL, 0);
-		}
-		debug(19, "Set small icon %d\n", num);
-
-		if (on >= 0)
-			plug417_set_small_icon_on(s, num, on);
-		if (width >= 0)
-			plug417_set_small_icon_width(s, num, width);
-		if (x >= 0)
-			plug417_set_small_icon_x(s, num, x);
-		if (y >= 0)
-			plug417_set_small_icon_y(s, num, y);
-		if (trans >= 0)
-			plug417_set_small_icon_transparency(s, trans);
-	}
 }
 
 /*

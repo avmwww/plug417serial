@@ -352,6 +352,231 @@ int plug417_set_small_icon_transparency(struct plug417_serial *s, unsigned int t
 /*
  *
  */
+int plug417_set_menu_bar_on(struct plug417_serial *s, unsigned int on)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_MENU_BAR_ON, on);
+}
+
+/*
+ *
+ */
+int plug417_set_menu_bar_location(struct plug417_serial *s, unsigned int y)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_MENU_BAR_LOCATION, y);
+}
+
+/*
+ *
+ */
+int plug417_set_menu_bar_transparency(struct plug417_serial *s, unsigned int t)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_MENU_BAR_TRANSPARENCY, t);
+}
+
+/*
+ *
+ */
+int plug417_set_layer_on(struct plug417_serial *s, unsigned int on)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_LAYER_ON, on);
+}
+
+/*
+ *
+ */
+int plug417_set_layer_transparency(struct plug417_serial *s, unsigned int t)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_LAYER_TRANSPARENCY, t);
+}
+
+/*
+ *
+ */
+int plug417_set_half_pixel_cursor_on(struct plug417_serial *s, unsigned int on)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_HALF_PIXEL_CURSOR_ON, on);
+}
+
+/*
+ *
+ */
+int plug417_set_half_pixel_x(struct plug417_serial *s, unsigned int x)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_HALF_PIXEL_X, x);
+}
+
+/*
+ *
+ */
+int plug417_set_half_pixel_y(struct plug417_serial *s, unsigned int y)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_HALF_PIXEL_Y, y);
+}
+
+/*
+ *
+ */
+int plug417_set_half_pixel_color(struct plug417_serial *s, unsigned int c)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_MENU_PAGE_1,
+				PLUG417_OPTION_HALF_PIXEL_COLOR, c);
+}
+
+/*
+ *
+ */
+int plug417_set_hotspot_tracking_cursor_on(struct plug417_serial *s, unsigned int on)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_HOTSPOT_TRACKING_PAGE,
+				PLUG417_OPTION_HOTTEST_CURSOR_ON, on);
+}
+
+/*
+ *
+ */
+int plug417_set_hotspot_tracking_upper_limit(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_HOTSPOT_TRACKING_PAGE,
+				PLUG417_OPTION_HOTSPOT_TRACKING_UPPER, v);
+}
+
+/*
+ *
+ */
+int plug417_set_hotspot_tracking_lower_limit(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_HOTSPOT_TRACKING_PAGE,
+				PLUG417_OPTION_HOTSPOT_TRACKING_LOWER, v);
+}
+
+/*
+ *
+ */
+int plug417_set_hotspot_tracking_color_r(struct plug417_serial *s, unsigned int c)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_HOTSPOT_TRACKING_PAGE,
+				PLUG417_OPTION_HOTTEST_CURSOR_R, c);
+}
+
+/*
+ *
+ */
+int plug417_set_hotspot_tracking_color_g(struct plug417_serial *s, unsigned int c)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_HOTSPOT_TRACKING_PAGE,
+				PLUG417_OPTION_HOTTEST_CURSOR_G, c);
+}
+
+/*
+ *
+ */
+int plug417_set_hotspot_tracking_color_b(struct plug417_serial *s, unsigned int c)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_HOTSPOT_TRACKING_PAGE,
+				PLUG417_OPTION_HOTTEST_CURSOR_B, c);
+}
+
+/*
+ *
+ */
+int plug417_set_area_analisys_mode(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
+				PLUG417_OPTION_AREA_ANALISYS_MODE, v);
+}
+
+/*
+ *
+ */
+int plug417_set_area_x(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
+				PLUG417_OPTION_AREA_X, v);
+}
+
+/*
+ *
+ */
+int plug417_set_area_y(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
+				PLUG417_OPTION_AREA_Y, v);
+}
+
+/*
+ *
+ */
+int plug417_set_area_width(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
+				PLUG417_OPTION_AREA_WIDTH, v);
+}
+
+/*
+ *
+ */
+int plug417_set_area_height(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
+				PLUG417_OPTION_AREA_HEIGHT, v);
+}
+
+/*
+ *
+ */
+int plug417_set_area_color_r(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
+				PLUG417_OPTION_AREA_COLOR_R, v);
+}
+
+/*
+ *
+ */
+int plug417_set_area_color_g(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
+				PLUG417_OPTION_AREA_COLOR_G, v);
+}
+
+/*
+ *
+ */
+int plug417_set_area_color_b(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
+				PLUG417_OPTION_AREA_COLOR_B, v);
+}
+
+/*
+ *
+ */
+int plug417_set_area_high_temperature_alarm(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
+				PLUG417_OPTION_AREA_HIGH_TEMP_ALARM, v);
+}
+
+/*
+ *
+ */
+int plug417_set_area_high_temperature_alarm_threshold(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
+				PLUG417_OPTION_AREA_HIGH_TEMP_ALARM_THRESHOLD, v);
+}
+
+/*
+ *
+ */
 static int plug417_setup(struct plug417_serial *s, const char *serial)
 {
 	int fd;

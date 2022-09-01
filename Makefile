@@ -7,7 +7,7 @@ AR = $(CROSS_COMPILE)ar
 
 TARGETS = plug417serial.a plug417serial.so plug417ctrl
 
-SRCS = plug417serial.c plug417print.c
+SRCS = plug417serial.c plug417print.c plug417cmd.c
 
 OBJS = $(SRCS:.c=.o)
 

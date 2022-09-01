@@ -245,6 +245,7 @@ static void plug417_print_digit16(const char *fmt, unsigned int member)
 	printf("%s: %d\n", fmt, be16toh(member));
 }
 
+#if 0
 /*
  *
  */
@@ -252,6 +253,7 @@ static void plug417_print_digit24(const char *fmt, unsigned int member)
 {
 	printf("%s: %d\n", fmt, be32toh(member) >> 8);
 }
+#endif
 
 /*
  *
@@ -430,7 +432,9 @@ static void plug417_print_menu_function_page_2(struct plug417_serial *s)
 	plug417_print_member_on_off("Half pixel cursor", m->half_pixel_cursor);
 	plug417_print_digit16("Half pixel cursor location setting X", m->half_pixel_cursor_lacation_x);
 	plug417_print_digit16("Half pixel cursor location setting Y", m->half_pixel_cursor_lacation_y);
-	plug417_print_digit24("Half pixel color label", m->half_pixel_color_label.value);
+	plug417_print_digit("Half pixel color label R", m->half_pixel_color_label.v8[0]);
+	plug417_print_digit("Half pixel color label G", m->half_pixel_color_label.v8[1]);
+	plug417_print_digit("Half pixel color label B", m->half_pixel_color_label.v8[2]);
 }
 
 /*
