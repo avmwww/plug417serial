@@ -45,6 +45,10 @@ extern "C" {
 #define PLUG417_SET_AREA_ANALYSIS_PAGE		3
 #define PLUG417_SET_HOTSPOT_TRACKING_PAGE	4
 
+/* Temperature measurement page */
+#define PLUG417_PARAMETER_SETTING_PAGE		0
+#define PLUG417_BLACKBODY_CORRECTION_PAGE	1
+
 /*
  * Setup page
  */
@@ -164,6 +168,18 @@ extern "C" {
 
 #define PLUG417_OPTION_BRIGHTNESS			0x0a
 #define PLUG417_OPTION_CONTRAST				0x0b
+
+/* Temperature measurement */
+#define PLUG417_OPTION_DISTANCE				1
+#define PLUG417_OPTION_EMISSIVITY			2
+#define PLUG417_OPTION_MEASUREMENT_MODE			3
+#define PLUG417_OPTION_TEMPERATURE_SHOW			4
+#define PLUG417_OPTION_TEMPERATURE_CALIBRATION		5
+#define PLUG417_OPTION_FACTORY_RESET			6
+#define PLUG417_OPTION_REFLECTED			7
+#define PLUG417_OPTION_TM_SAVE_SETTINGS			8
+#define PLUG417_OPTION_HUMIDITY_SAVE_SETTINGS		9
+#define PLUG417_OPTION_TEMPERATURE_MEASUREMENT_RANGE	10
 
 #define PLUG417_COMMAND_BRIGHTNESS_MAX			100
 #define PLUG417_COMMAND_CONTRAST_MAX			100
@@ -500,6 +516,26 @@ int plug417_set_hotspot_tracking_color_r(struct plug417_serial *s, unsigned int 
 int plug417_set_hotspot_tracking_color_g(struct plug417_serial *s, unsigned int c);
 
 int plug417_set_hotspot_tracking_color_b(struct plug417_serial *s, unsigned int c);
+
+int plug417_set_temperature_measurement_distance(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_temperature_measurement_emissivity(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_temperature_measurement_mode(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_temperature_measurement_show(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_temperature_measurement_calibration(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_temperature_measurement_factory_reset(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_temperature_measurement_reflected_setting(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_temperature_measurement_save_settings(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_temperature_measurement_humidity_save_settings(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_temperature_measurement_range(struct plug417_serial *s, unsigned int v);
 
 int plug417_set_area_analisys_mode(struct plug417_serial *s, unsigned int v);
 

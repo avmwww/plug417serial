@@ -44,6 +44,7 @@ static void usage(char **argv)
 {
 	printf("Usage: %s <options>\n", argv[0]);
 	printf("\t-d --device <path>\tSerial device name, default %s\n", DEFAULT_DEVICE_NAME);
+	printf("\t-r --command <command>\tSend command to sensor, use help or help:cmd or help:<command> to usage help\n");
 	printf("\t-g --get <0..%d\tQuery page, default action if parameters not specified print sensor status\n",
 			PLUG417_PAGE_MAX);
 	printf("\t-s --set <0..5>\tSet functional classification\n");
@@ -149,7 +150,7 @@ static int parse_opt(int argc, char **argv, struct plug417 *plug)
  */
 int main(int argc, char **argv)
 {
-	struct plug417_serial *ps;
+	struct plug417_serial *ps = NULL;
 	struct plug417_status st;
 	struct plug417 *plug;
 
@@ -173,6 +174,10 @@ int main(int argc, char **argv)
 		plug->query = 0;
 
 	parse_opt(argc, argv, plug);
+	if (plug->command && !strncmp(plug->command, "help", 4)) {
+		plug417_set_command(ps, plug->command);
+		exit(EXIT_SUCCESS);
+	}
 
 	ps = plug417_open(plug->device);
 
