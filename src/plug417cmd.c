@@ -228,8 +228,8 @@ static const struct plug417_cmd plug417_cmd[] = {
 /*
  *
  */
-static int plug417_cmd_handler(struct plug417_serial *s, const char *name,
-		const struct plug417_sub_cmd *cmd, const char *c)
+static int plug417_cmd_handler(struct plug417_serial *s,
+		const struct plug417_cmd *cmd, const char *c)
 {
 	char parm[64];
 	char val[64];
@@ -242,10 +242,11 @@ static int plug417_cmd_handler(struct plug417_serial *s, const char *name,
 		set[i] = -1;
 
 	while (*c != '\0') {
+		int valid = 0;
 		c = parse_elm(c, parm, val, sizeof(parm));
 		debug(PLUG417_CMD_PARSE_DEBUG, "P = %s, V = %s\n", parm, val);
 
-		sub = cmd;
+		sub = cmd->sub;
 		i = 0;
 		while (sub->cmd) {
 			if (!strcmp(parm, sub->cmd) || (sub->alias && !strcmp(parm, sub->alias))) {
@@ -253,25 +254,34 @@ static int plug417_cmd_handler(struct plug417_serial *s, const char *name,
 					set[i] = strtol(val, NULL, 0);
 				else
 					set[i] = sub->set;
+				valid = 1;
+				break;
 			}
 			sub++;
 			i++;
 		}
+		if (!valid) {
+			fprintf(stderr, "Unknown parameter '%s' to command '%s'\n", parm, cmd->cmd);
+			return -1;
+		}
 	}
-	debug(PLUG417_CMD_PARSE_DEBUG, "%s\n", name);
+	debug(PLUG417_CMD_PARSE_DEBUG, "%s\n", cmd->name);
 
 	i = 0;
-	sub = cmd;
+	sub = cmd->sub;
 	while (sub->cmd) {
 		if (set[i] >= 0) {
 			if (sub->handler) {
+				debug(PLUG417_CMD_PARSE_DEBUG, "Run handler\n");
 				if ((err = sub->handler(s, set[i])) < 0)
 					return err;
 			} else if (sub->handler_ext) {
+				debug(PLUG417_CMD_PARSE_DEBUG, "Run ext handler\n");
 				if ((err = sub->handler_ext(s, set[0], set[i])) < 0)
 					return err;
 			}
 		}
+		sub++;
 		i++;
 	}
 	return err;
@@ -331,7 +341,7 @@ int plug417_set_command(struct plug417_serial *s, const char *cmd)
 
 	while (c->name) {
 		if (!strcmp(parm, c->cmd))
-			err = plug417_cmd_handler(s, c->name, c->sub, cmd);
+			err = plug417_cmd_handler(s, c, cmd);
 
 		c++;
 	}

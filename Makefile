@@ -32,7 +32,7 @@ plug417ctrl: $(OBJS) plug417ctrl.o
 	$(CC) ${LDFLAGS} -o $@ $^
 
 clean:
-	rm -f $(TARGETS) $(OBJS)
+	rm -f $(TARGETS) *.o
 
 #.PHONY: %.i
 
