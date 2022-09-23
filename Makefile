@@ -5,8 +5,8 @@
 CC = $(CROSS_COMPILE)gcc
 AR = $(CROSS_COMPILE)ar
 
-TARGETS = plug417serial.a plug417serial.so plug417ctrl
-
+TARGETS = plug417serial.a plug417ctrl
+# plug417serial.so 
 SRCS = plug417serial.c plug417print.c plug417cmd.c
 
 OBJS = $(SRCS:.c=.o)
