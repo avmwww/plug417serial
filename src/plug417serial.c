@@ -535,6 +535,96 @@ int plug417_set_hotspot_tracking_color_b(struct plug417_serial *s, unsigned int 
 /*
  *
  */
+int plug417_set_temperature_measurement_distance(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_TEMPERATURE_MEASUREMENT_PAGE, PLUG417_PARAMETER_SETTING_PAGE,
+				PLUG417_OPTION_DISTANCE, v);
+}
+
+/*
+ *
+ */
+int plug417_set_temperature_measurement_emissivity(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_TEMPERATURE_MEASUREMENT_PAGE, PLUG417_PARAMETER_SETTING_PAGE,
+				PLUG417_OPTION_EMISSIVITY, v);
+}
+
+/*
+ *
+ */
+int plug417_set_temperature_measurement_mode(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_TEMPERATURE_MEASUREMENT_PAGE, PLUG417_PARAMETER_SETTING_PAGE,
+				PLUG417_OPTION_MEASUREMENT_MODE, v);
+}
+
+/*
+ *
+ */
+int plug417_set_temperature_measurement_show(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_TEMPERATURE_MEASUREMENT_PAGE, PLUG417_PARAMETER_SETTING_PAGE,
+				PLUG417_OPTION_TEMPERATURE_SHOW, v);
+}
+
+/*
+ *
+ */
+int plug417_set_temperature_measurement_calibration(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_TEMPERATURE_MEASUREMENT_PAGE, PLUG417_PARAMETER_SETTING_PAGE,
+				PLUG417_OPTION_TEMPERATURE_CALIBRATION, v);
+}
+
+/*
+ *
+ */
+int plug417_set_temperature_measurement_factory_reset(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_TEMPERATURE_MEASUREMENT_PAGE, PLUG417_PARAMETER_SETTING_PAGE,
+				PLUG417_OPTION_FACTORY_RESET, v);
+}
+
+/*
+ *
+ */
+int plug417_set_temperature_measurement_reflected_setting(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_TEMPERATURE_MEASUREMENT_PAGE, PLUG417_PARAMETER_SETTING_PAGE,
+				PLUG417_OPTION_REFLECTED, v);
+}
+
+/*
+ *
+ */
+int plug417_set_temperature_measurement_save_settings(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_TEMPERATURE_MEASUREMENT_PAGE, PLUG417_PARAMETER_SETTING_PAGE,
+				PLUG417_OPTION_TM_SAVE_SETTINGS, v);
+}
+
+/*
+ *
+ */
+int plug417_set_temperature_measurement_humidity_save_settings(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_TEMPERATURE_MEASUREMENT_PAGE, PLUG417_PARAMETER_SETTING_PAGE,
+				PLUG417_OPTION_HUMIDITY_SAVE_SETTINGS, v);
+}
+
+/*
+ *
+ */
+int plug417_set_temperature_measurement_range(struct plug417_serial *s, unsigned int v)
+{
+	return plug417_request(s, PLUG417_TEMPERATURE_MEASUREMENT_PAGE, PLUG417_PARAMETER_SETTING_PAGE,
+				PLUG417_OPTION_TEMPERATURE_MEASUREMENT_RANGE, v);
+}
+
+/*
+ *
+ */
 int plug417_set_area_analisys_mode(struct plug417_serial *s, unsigned int v)
 {
 	return plug417_request(s, PLUG417_APPLICATION_PAGE, PLUG417_SET_AREA_ANALYSIS_PAGE,
