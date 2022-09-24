@@ -53,6 +53,7 @@ static void usage(char **argv)
 	printf("\t-c --color <0..%d>\tSet pseudo color\n", PLUG417_COMMAND_COLOR_MAX);
 	printf("\t-m --mirror <0..%d>\tSet/Reset image mirroring\n", PLUG417_COMMAND_MIRROR_MAX);
 	printf("\t-t --test <0..%d>\tSet test screen\n", PLUG417_COMMAND_TEST_SCREEN_MAX);
+	printf("\t-r --command <command>\tType help for extended help usage for this switch\n");
 	printf("\t-v --verbose <0..99>\tPrint verbose debug information\n");
 	printf("\t-h --help\tUsage help\n");
 	exit(EXIT_SUCCESS);
