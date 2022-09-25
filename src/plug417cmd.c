@@ -39,7 +39,7 @@ static const char *parse_elm(const char *buf, char *elm, char *val, int size)
 
 	if (*p == ':' || *p == '=')
 		p++;
-	
+
 	return p;
 }
 
@@ -54,6 +54,47 @@ struct plug417_sub_cmd {
 	int (*handler_ext)(struct plug417_serial *, unsigned int, unsigned int);
 	int set;
 	const char *description;
+};
+
+
+static const struct plug417_sub_cmd plug417_cmd_analog_video[] = {
+	{"on", NULL, plug417_set_analog_video_on, NULL,  1, "Analog video on"},
+	{"off", NULL, plug417_set_analog_video_on, NULL, 0, "Analog video on"},
+	{"system", "s", plug417_set_video_system, NULL, -1, "Video system"
+			PARAM_PREFIX"PAL  384x288 (0)"
+			PARAM_PREFIX"NTSC 320x240 (1)"
+			PARAM_PREFIX"PAL  360x288 (2)"
+			PARAM_PREFIX"NTSC 360x240 (3)"},
+	{"fps", "f", plug417_set_frame_rate, NULL, -1, "Frame rate"
+			PARAM_PREFIX"PAL 50Hz, NTSC 60Hz (0)"
+			PARAM_PREFIX"PAL 25Hz, NTSC 30Hz (1)"
+			PARAM_PREFIX"9Hz"},
+	{"color", "c", plug417_set_pseudo_color, NULL, -1, "Pseaudo color"
+			PARAM_PREFIX"White hot (0)"
+			PARAM_PREFIX"Fulgurite (1)"
+			PARAM_PREFIX"Iron Red  (2)"
+			PARAM_PREFIX"Hot Iron  (3)"
+			PARAM_PREFIX"Medical   (4)"
+			PARAM_PREFIX"Arctic    (5)"
+			PARAM_PREFIX"Rainbow 1 (6)"
+			PARAM_PREFIX"Rainbow 2 (7)"
+			PARAM_PREFIX"Tint      (8)"
+			PARAM_PREFIX"Black hot (9)"},
+	{"mirror", "m", plug417_set_mirror_image, NULL, -1, "Mirror image"
+			PARAM_PREFIX"N/A (0)"
+			PARAM_PREFIX"in X direction (1)"
+			PARAM_PREFIX"in Y direction (2)"
+			PARAM_PREFIX"n X and Y directions (3)"},
+	{"zoom", "z", plug417_set_ezoom, NULL, -1, "EZOOM"
+			PARAM_PREFIX"8 ~ 64 (the effective value range 1 to 8) "},
+	{"zoom_x", "x", plug417_set_zoom_x, NULL, -1, "Coordinate X of the center of zoomed area"
+			PARAM_PREFIX"0 ~ width-1"},
+	{"zoom_y", "y", plug417_set_zoom_y, NULL, -1, "Coordinate Y of the center of zoomed area"
+			PARAM_PREFIX"0 ~ height-1"},
+	{"track", "t", plug417_set_hotspot_track_on, NULL, -1, "Hotspot track"
+			PARAM_PREFIX"Off (0)"
+			PARAM_PREFIX"On  (1)"},
+	{NULL},
 };
 
 static const struct plug417_sub_cmd plug417_cmd_digital_video[] = {
@@ -214,6 +255,7 @@ struct plug417_cmd {
 };
 
 static const struct plug417_cmd plug417_cmd[] = {
+	{"Analog video", "analog", plug417_cmd_analog_video},
 	{"Digital video", "digit", plug417_cmd_digital_video},
 	{"Small icon", "icon", plug417_cmd_small_icon},
 	{"Menu bar", "menu", plug417_cmd_menu_bar},

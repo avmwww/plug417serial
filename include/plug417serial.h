@@ -85,8 +85,8 @@ extern "C" {
 #define PLUG417_OPTION_PSEUDO_COLOR			4
 #define PLUG417_OPTION_MIRROR_IMAGE			5
 #define PLUG417_OPTION_EZOOM				6
-#define PLUG417_OPTION_COORDINATE_X_ZOOMED AREA		7
-#define PLUG417_OPTION_COORDINATE_Y_ZOOMED AREA		8
+#define PLUG417_OPTION_COORDINATE_X_ZOOMED_AREA		7
+#define PLUG417_OPTION_COORDINATE_Y_ZOOMED_AREA		8
 #define PLUG417_OPTION_HOTSPOT_TRACK_SWITCH		9
 
 #define PLUG417_COMMAND_COLOR_WHITE_HOT			0
@@ -451,9 +451,23 @@ int plug417_query_reply_print(struct plug417_serial *s);
 
 void plug417_print_status(struct plug417_serial *s, struct plug417_status *st);
 
-int plug417_set_pseaudo_color(struct plug417_serial *s, unsigned int color);
+int plug417_set_analog_video_on(struct plug417_serial *s, unsigned int on);
+
+int plug417_set_video_system(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_frame_rate(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_pseudo_color(struct plug417_serial *s, unsigned int color);
 
 int plug417_set_mirror_image(struct plug417_serial *s, unsigned int mirror);
+
+int plug417_set_ezoom(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_zoom_x(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_zoom_y(struct plug417_serial *s, unsigned int v);
+
+int plug417_set_hotspot_track_on(struct plug417_serial *s, unsigned int on);
 
 int plug417_set_test_screen(struct plug417_serial *s, unsigned int test);
 

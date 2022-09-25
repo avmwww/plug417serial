@@ -199,7 +199,7 @@ int main(int argc, char **argv)
 	}
 
 	if (plug->color >= 0)
-		plug417_set_pseaudo_color(ps, plug->color);
+		plug417_set_pseudo_color(ps, plug->color);
 
 	if (plug->mirror >= 0)
 		plug417_set_mirror_image(ps, plug->mirror);
