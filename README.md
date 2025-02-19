@@ -118,15 +118,15 @@ Sub commands:
 &emsp; Small icon off  
 &emsp;x  
 &emsp; Small icon coordinate X  
-&emsp;&emsp;0~width-width  
+&emsp;&emsp;0&#126;width-width  
 &emsp;y  
 &emsp; Small icon coordinate Y  
-&emsp;&emsp;0~height-width  
+&emsp;&emsp;0&#126;height-width  
 &emsp;width, w  
 &emsp; Small icon width  
 &emsp;transparency, t  
 &emsp; Small icon transparency setting  
-&emsp;&emsp;0~4  
+&emsp;&emsp;0&#126;4  
 Menu bar: menu  
 Sub commands:  
 &emsp;on  
@@ -135,10 +135,10 @@ Sub commands:
 &emsp; Menu bar off  
 &emsp;location, y  
 &emsp; Menu bar location setting  
-&emsp;&emsp;0~height-16  
+&emsp;&emsp;0&#126;height-16  
 &emsp;transparency, t  
 &emsp; Menu bar transparency setting  
-&emsp;&emsp;0~4  
+&emsp;&emsp;0&#126;4  
 Layer: layer  
 Sub commands:  
 &emsp;on  
@@ -147,7 +147,7 @@ Sub commands:
 &emsp; Layer off  
 &emsp;transparency, t  
 &emsp; Layer transparency setting  
-&emsp;&emsp;0~8  
+&emsp;&emsp;0&#126;8  
 Half pixel: hpcursor  
 Sub commands:  
 &emsp;on  
@@ -156,10 +156,10 @@ Sub commands:
 &emsp; Half pixel cursor off  
 &emsp;x  
 &emsp; Half pixel cursor coordinate X  
-&emsp;&emsp;0~width  
+&emsp;&emsp;0&#126;width  
 &emsp;y  
 &emsp; Half pixel cursor coordinate Y  
-&emsp;&emsp;0~height  
+&emsp;&emsp;0&#126;height  
 &emsp;color, c  
 &emsp; Half pixel color setting  
 &emsp;&emsp;RGB value (0xRRGGBB)  
@@ -174,33 +174,33 @@ Sub commands:
 &emsp;&emsp;Area three (4)  
 &emsp;x  
 &emsp; Area top left conner coordinate X  
-&emsp;&emsp;0~383  
+&emsp;&emsp;0&#126;383  
 &emsp;y  
 &emsp; Area top left conner coordinate Y  
-&emsp;&emsp;0~287  
+&emsp;&emsp;0&#126;287  
 &emsp;width, w  
 &emsp; Area width W  
-&emsp;&emsp;1~255  
+&emsp;&emsp;1&#126;255  
 &emsp;height, h  
 &emsp; Area height H  
-&emsp;&emsp;1~255  
+&emsp;&emsp;1&#126;255  
 &emsp;r  
 &emsp; The color R of rectangle  
-&emsp;&emsp;0~255  
+&emsp;&emsp;0&#126;255  
 &emsp;g  
 &emsp; The color G of rectangle  
-&emsp;&emsp;0~255  
+&emsp;&emsp;0&#126;255  
 &emsp;b  
 &emsp; The color B of rectangle  
-&emsp;&emsp;0~255  
+&emsp;&emsp;0&#126;255  
 &emsp;alarm, a  
 &emsp; High temperature alarm switch  
 &emsp;&emsp;High temperature alarm off (0)  
 &emsp;&emsp;High temperature alarm on (1)  
 &emsp;threshold, t  
 &emsp; High temperature alarm threshold  
-&emsp;&emsp;Observation 0~65535  
-&emsp;&emsp;Thermography -500~10000  
+&emsp;&emsp;Observation 0&#126;65535  
+&emsp;&emsp;Thermography -500&#126;10000  
 Hotspot tracking: hptrack  
 Sub commands:  
 &emsp;on  
@@ -209,29 +209,29 @@ Sub commands:
 &emsp; Cursor switch off  
 &emsp;upper, u  
 &emsp; Hotspot tracking upper limit value  
-&emsp;&emsp;Observation 0~65535  
-&emsp;&emsp;Thermography -500~10000  
+&emsp;&emsp;Observation 0&#126;65535  
+&emsp;&emsp;Thermography -500&#126;10000  
 &emsp;lower, l  
 &emsp; Hotspot tracking lower limit value  
-&emsp;&emsp;Observation 0~65535  
-&emsp;&emsp;Thermography -500~10000  
+&emsp;&emsp;Observation 0&#126;65535  
+&emsp;&emsp;Thermography -500&#126;10000  
 &emsp;r  
 &emsp; The hottest cursor point color R  
-&emsp;&emsp;0~255  
+&emsp;&emsp;0&#126;255  
 &emsp;g  
 &emsp; The hottest cursor point color G  
-&emsp;&emsp;0~255  
+&emsp;&emsp;0&#126;255  
 &emsp;b  
 &emsp; The hottest cursor point color B  
-&emsp;&emsp;0~255  
+&emsp;&emsp;0&#126;255  
 Temperature measurement: temp  
 Sub commands:  
 &emsp;distance, d  
 &emsp; Distance setting  
-&emsp;&emsp;0~100  
+&emsp;&emsp;0&#126;100  
 &emsp;emissivity, e  
 &emsp; Measurement mode  
-&emsp;&emsp;0~100  
+&emsp;&emsp;0&#126;100  
 &emsp;show, s  
 &emsp; Temperature Show  
 &emsp;&emsp;degree Celsius (0)  
@@ -239,7 +239,7 @@ Sub commands:
 &emsp;&emsp;degree Kelvin (2)  
 &emsp;calibration, c  
 &emsp; Temperature Calibration  
-&emsp;&emsp;-32768~32767  
+&emsp;&emsp;-32768&#126;32767  
 &emsp;reset, f  
 &emsp; Factory reset  
 &emsp;reflected, r  
@@ -250,5 +250,5 @@ Sub commands:
 &emsp; Humidity save settings  
 &emsp;range, g  
 &emsp; Temperature measurement range  
-&emsp;&emsp;-20°C~150°C  (0)  
+&emsp;&emsp;-20°C&#126;150°C  (0)  
 &emsp;&emsp;-20°C~800°C  (1)  
