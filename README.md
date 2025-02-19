@@ -1,5 +1,6 @@
 PLUG417 general-purpose uncooled infrared thermal module serial command interface  
-Usage: plug417ctrl &lt;options&gt;  
+..
+## Usage: plug417ctrl &lt;options&gt;  
 &emsp;-d --device &lt;path&gt;	Serial device name, default /dev/ttyACM0  
 &emsp;-r --command &lt;command&gt;	Send command to sensor, use help or help:cmd or help:&lt;command&gt; to usage help  
 &emsp;-g --get &lt;0..5	Query page, default action if parameters not specified print sensor status  
@@ -14,8 +15,22 @@ Usage: plug417ctrl &lt;options&gt;
 &emsp;-v --verbose &lt;0..99&gt;	Print verbose debug information  
 &emsp;-h --help	Usage help  
   
-Extended help:  
-plug417ctrl --command help  
+## Extended help:  
+..
+## plug417ctrl --command help:cmd  
+Command specified to plug417 sensor  
+  
+&emsp;Analog video: analog  
+&emsp;Digital video: digit  
+&emsp;Small icon: icon  
+&emsp;Menu bar: menu  
+&emsp;Layer: layer  
+&emsp;Half pixel: hpcursor  
+&emsp;Area Analysis: area  
+&emsp;Hotspot tracking: hptrack  
+&emsp;Temperature measurement: temp  
+  
+## plug417ctrl --command help  
 Command specified to plug417 sensor  
   
 Analog video: analog  
