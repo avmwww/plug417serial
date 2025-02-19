@@ -251,4 +251,4 @@ Sub commands:
 &emsp;range, g  
 &emsp; Temperature measurement range  
 &emsp;&emsp;-20°C&#126;150°C  (0)  
-&emsp;&emsp;-20°C~800°C  (1)  
+&emsp;&emsp;-20°C&#126;800°C  (1)  
